@@ -8,24 +8,22 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-// import Avro = require("avsc");
-const Avro = require("avsc");
 const util_1 = require("./util");
 const config_1 = require("./config");
 const rp = require("request-promise");
+const Avro = require("avsc");
 /**
  * Register the specified schema for the specified topic under the
  * specifed subject. The subject used is: <topic>-<key|value>
  *
- * @param topic - the topic for which to register a schema
+ * @param subject - the subject under which to register the schema
  * @param schemaRegistry - the schema registry host
  * @param numRetries - the number of retries to register before throwing an error
  * @param schema - the schema to register
- * @param suffix - the key or value portion of the subject
  *
  * @return - A Promise holding the id of the schema in the schema registry
  */
-const registerSchema = ({ subject, schemaRegistry, numRetries, schema }) => __awaiter(this, void 0, void 0, function* () {
+exports.registerSchema = ({ subject, schemaRegistry, numRetries, schema }) => __awaiter(this, void 0, void 0, function* () {
     // null schema so nothing to register
     if (!schema) {
         return -1;
@@ -34,7 +32,7 @@ const registerSchema = ({ subject, schemaRegistry, numRetries, schema }) => __aw
     const req = {
         method: "POST",
         uri: `${schemaRegistry}/subjects/${subject}/versions`,
-        headers: [{ Accept: config_1.ACCEPT_HEADERS }],
+        headers: { Accept: config_1.ACCEPT_HEADERS },
         body: {
             schema: JSON.stringify(schema)
         },
@@ -78,12 +76,13 @@ const registerSchema = ({ subject, schemaRegistry, numRetries, schema }) => __aw
     return schemaId;
 });
 /**
+ * @todo Fix doc comment
  * Encode an Avro value into a message, as expected by Confluent's Kafka Avro
  * deserializer.
  *
  * @param message - message to encode
  */
-const encodeData = (payload, schemaId, schema, length = 1024) => {
+exports.encodeData = (payload, schemaId, schema, length = 1024) => {
     if (payload === null) {
         // no payload so return it
         return null;
@@ -98,14 +97,14 @@ const encodeData = (payload, schemaId, schema, length = 1024) => {
     const pos = schema.encode(payload, buf, 5);
     if (pos < 0) {
         // the buffer was too short, we need to resize
-        return encodeData(payload, schemaId, schema, length - pos);
+        return exports.encodeData(payload, schemaId, schema, length - pos);
     }
     return buf.slice(0, pos);
 };
 const genMessageEncoder = ({ schema, schemaId }) => (message) => {
-    return encodeData(message, schemaId, schema);
+    return exports.encodeData(message, schemaId, schema);
 };
-const createAvroSchema = ({ wrapUnions }, schema) => {
+const createAvroSchema = ({ wrapUnions, schema }) => {
     if (schema) {
         return Avro.Type.forSchema(schema, { wrapUnions });
     }
@@ -114,25 +113,19 @@ const createAvroSchema = ({ wrapUnions }, schema) => {
 /*****************************************************************/
 /**                      EXPORTED INTERFACE                     **/
 /*****************************************************************/
-exports.createTopicEncoder = ({ schemaRegistry, numRetries, wrapUnions, subject, schema }) => __awaiter(this, void 0, void 0, function* () {
+exports.createEncoder = (opts) => __awaiter(this, void 0, void 0, function* () {
     // Aggregare the configuration values with defaults
-    const mergedOptions = util_1.aggregateOptions(config_1.optionsDefault, {
-        schemaRegistry,
-        numRetries,
-        wrapUnions,
-        subject,
-        schema
-    });
-    // topic info
-    const topicInfo = {
+    const mergedOpts = config_1.processOptions(opts);
+    // encoder info
+    const encoderInfo = {
         schema: null,
         schemaId: -1
     };
     // register the value and key schemas and parse them
-    [topicInfo.schema, topicInfo.schemaId] = yield Promise.all([
-        createAvroSchema(mergedOptions, schema),
-        registerSchema(mergedOptions)
+    [encoderInfo.schema, encoderInfo.schemaId] = yield Promise.all([
+        createAvroSchema(mergedOpts),
+        exports.registerSchema(mergedOpts)
     ]);
-    return genMessageEncoder(topicInfo);
+    return genMessageEncoder(encoderInfo);
 });
 //# sourceMappingURL=avro-encoder.js.map

@@ -32,6 +32,12 @@
 //   text: { string: "A simple test message in a wrapped union type" }
 // };
 
+describe("createEncoder", () => {
+  it("should encode schema with auto-wrapped union types by default", async () => {
+    expect(true === true);
+  });
+}
+
 // describe("createEncoder", () => {
 //   it("should encode schema with auto-wrapped union types by default", async () => {
 //     const pkgConfig = {};

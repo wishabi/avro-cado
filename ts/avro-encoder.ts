@@ -1,6 +1,6 @@
 import { handleError, aggregateOptions } from "./util";
-import { optionsDefault, ACCEPT_HEADERS, encodeLogger } from "./config";
-import { Options, EncoderTopicInfo, EncodeFunc } from "./types/types";
+import { processOptions, ACCEPT_HEADERS, encodeLogger } from "./config";
+import { EncoderInfo, EncodeFunc } from "./types/types";
 import * as rp from "request-promise";
 import * as Avro from "avsc";
 
@@ -20,7 +20,7 @@ export const registerSchema = async ({
   schemaRegistry,
   numRetries,
   schema
-}: Options): Promise<number> => {
+}): Promise<number> => {
   // null schema so nothing to register
   if (!schema) {
     return -1;
@@ -118,17 +118,13 @@ export const encodeData = (
   return buf.slice(0, pos);
 };
 
-const genMessageEncoder = ({
-  schema,
-  schemaId
-}: EncoderTopicInfo): EncodeFunc => (message: object): Buffer => {
+const genMessageEncoder = ({ schema, schemaId }: EncoderInfo): EncodeFunc => (
+  message: object
+): Buffer => {
   return encodeData(message, schemaId, schema);
 };
 
-const createAvroSchema = (
-  { wrapUnions }: Options,
-  schema: object | null
-): Avro.Type | null => {
+const createAvroSchema = ({ wrapUnions, schema }): Avro.Type | null => {
   if (schema) {
     return Avro.Type.forSchema(schema, { wrapUnions });
   }
@@ -140,33 +136,21 @@ const createAvroSchema = (
 /**                      EXPORTED INTERFACE                     **/
 /*****************************************************************/
 
-export const createEncoder = async ({
-  schemaRegistry,
-  numRetries,
-  wrapUnions,
-  subject,
-  schema
-}: Options): Promise<EncodeFunc> => {
+export const createEncoder = async (opts): Promise<EncodeFunc> => {
   // Aggregare the configuration values with defaults
-  const mergedOptions: Options = aggregateOptions(optionsDefault, {
-    schemaRegistry,
-    numRetries,
-    wrapUnions,
-    subject,
-    schema
-  });
+  const mergedOpts = processOptions(opts);
 
-  // topic info
-  const topicInfo: EncoderTopicInfo = {
+  // encoder info
+  const encoderInfo: EncoderInfo = {
     schema: null,
     schemaId: -1
   };
 
   // register the value and key schemas and parse them
-  [topicInfo.schema, topicInfo.schemaId] = await Promise.all([
-    createAvroSchema(mergedOptions, schema),
-    registerSchema(mergedOptions)
+  [encoderInfo.schema, encoderInfo.schemaId] = await Promise.all([
+    createAvroSchema(mergedOpts),
+    registerSchema(mergedOpts)
   ]);
 
-  return genMessageEncoder(topicInfo);
+  return genMessageEncoder(encoderInfo);
 };

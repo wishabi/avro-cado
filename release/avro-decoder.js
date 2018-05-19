@@ -136,27 +136,21 @@ const genMessageDecoder = ({ schema, getSchemaResolver }) => (buffer) => __await
 /*****************************************************************/
 /**                      EXPORTED INTERFACE                     **/
 /*****************************************************************/
-exports.createTopicDecoder = ({ schemaRegistry, numRetries, wrapUnions, subject, schema }) => {
+exports.createDecoder = (opts) => {
     // Aggregare the configuration values with defaults
-    const mergedOptions = util_1.aggregateOptions(config_1.optionsDefault, {
-        schemaRegistry,
-        numRetries,
-        wrapUnions,
-        subject,
-        schema
-    });
-    // topic info
-    const topicInfo = {
-        subject: subject,
-        schema: schema ? Avro.Type.forSchema(schema) : null,
+    const mergedOpts = config_1.processOptions(opts);
+    // decoder info
+    const decoderInfo = {
+        subject: mergedOpts.subject,
+        schema: mergedOpts.schema ? Avro.Type.forSchema(mergedOpts.schema) : null,
         resolversMap: {},
         retrieveSchema: null,
         createSchemaResolver: null,
         getSchemaResolver: null
     };
-    topicInfo.retrieveSchema = genSchemaRetriever(mergedOptions);
-    topicInfo.createSchemaResolver = genCreateSchemaResolver(topicInfo);
-    topicInfo.getSchemaResolver = genGetSchemaResolver(topicInfo);
-    return genMessageDecoder(topicInfo);
+    decoderInfo.retrieveSchema = genSchemaRetriever(mergedOpts);
+    decoderInfo.createSchemaResolver = genCreateSchemaResolver(decoderInfo);
+    decoderInfo.getSchemaResolver = genGetSchemaResolver(decoderInfo);
+    return genMessageDecoder(decoderInfo);
 };
 //# sourceMappingURL=avro-decoder.js.map

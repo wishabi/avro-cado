@@ -1,3 +1,3 @@
-export { createTopicDecoder } from "./avro-decoder";
-export { createTopicEncoder } from "./avro-encoder";
+export { createDecoder } from "./avro-decoder";
+export { createEncoder } from "./avro-encoder";
 export { DecodeFunc, EncodeFunc } from "./types/types";

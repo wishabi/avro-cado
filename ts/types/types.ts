@@ -6,31 +6,13 @@ import * as Avro from "avsc";
  ********************************************************
  */
 
-// export interface Message {
-//   topic: string;
-//   value: Buffer;
-//   offset: number;
-//   partition: number;
-//   key: Buffer;
-//   size: number;
-//   timestamp: number;
-// }
-
-export interface Options {
-  schemaRegistry: string;
-  numRetries: number;
-  wrapUnions: string;
-  subject: string;
-  schema: any | null;
-}
-
 /*
  ********************************************************
  *                                          ENCODER TYPES
  ********************************************************
  */
 
-export interface EncoderTopicInfo {
+export interface EncoderInfo {
   schema: Avro.Type | null;
   schemaId: number;
 }
@@ -47,7 +29,7 @@ export interface EncodeFunc {
 
 export type ResolverMap = { [index: number]: Promise<Avro.Resolver> };
 
-export interface DecoderTopicInfo {
+export interface DecoderInfo {
   subject: string;
   schema: Avro.Type | null;
   resolversMap: ResolverMap;

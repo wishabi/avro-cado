@@ -1,16 +1,14 @@
 import { registerSchema } from "../../ts/avro-encoder";
-import { Options } from "../../ts/types/types";
 import { handleError } from "../../ts/util";
 import { ACCEPT_HEADERS } from "../../ts/config";
 import * as rp from "request-promise";
 
 import { logger } from "../__fixtures__/logger";
 
-const opts: Options = {
+const opts = {
   subject: "subject",
   schemaRegistry: "host",
   numRetries: 1,
-  wrapUnions: "auto",
   schema: "schema"
 };
 
@@ -18,47 +16,16 @@ jest.mock("request-promise", () => {
   return jest.fn();
 });
 
-rp
-  .mockImplementationOnce(params => {
-    return {
-      body: {
-        id: 1
-      }
-    };
-  })
-  .mockImplementationOnce(params => {
-    throw {
-      statusCode: 500,
-      error: {
-        error_code: 50002,
-        message: "Retry error 500:50002"
-      },
-      message: "retry1"
-    };
-  })
-  .mockImplementationOnce(params => {
-    throw {
-      statusCode: 500,
-      error: {
-        error_code: 50002,
-        message: "Retry error 500:50002"
-      },
-      message: "retry1"
-    };
-  })
-  .mockImplementationOnce(params => {
-    throw {
-      statusCode: 600,
-      error: {
-        error_code: 50002,
-        message: "Retry error 500:50002"
-      },
-      message: "retry1"
-    };
-  });
-
 describe("registerSchema", () => {
   it("should get the schema ID on success", async () => {
+    rp.mockImplementationOnce(params => {
+      return {
+        body: {
+          id: 1
+        }
+      };
+    });
+
     expect.assertions(3);
 
     const schemaId = await registerSchema(opts);
@@ -72,7 +39,7 @@ describe("registerSchema", () => {
       json: true,
       method: "POST",
       resolveWithFullResponse: true,
-      uri: "host/subjects/subject/versions"
+      uri: `host/subjects/${opts.subject}/versions`
     });
   });
 
@@ -81,6 +48,28 @@ describe("registerSchema", () => {
      * one all configured retries have been exhausted
      */
   it("should retry 1 times on retriable error", async () => {
+    rp
+      .mockImplementationOnce(params => {
+        throw {
+          statusCode: 500,
+          error: {
+            error_code: 50002,
+            message: "Retry error 500:50002"
+          },
+          message: "retry1"
+        };
+      })
+      .mockImplementationOnce(params => {
+        throw {
+          statusCode: 500,
+          error: {
+            error_code: 50002,
+            message: "Retry error 500:50002"
+          },
+          message: "retry1"
+        };
+      });
+
     expect.assertions(2);
 
     await expect(registerSchema(opts)).rejects.toMatchSnapshot();
@@ -93,6 +82,17 @@ describe("registerSchema", () => {
      * retries are configured
      */
   it("should retry 0 times on fatal error", async () => {
+    rp.mockImplementationOnce(params => {
+      throw {
+        statusCode: 600,
+        error: {
+          error_code: 50002,
+          message: "Retry error 500:50002"
+        },
+        message: "retry1"
+      };
+    });
+
     expect.assertions(2);
 
     await expect(registerSchema(opts)).rejects.toMatchSnapshot();

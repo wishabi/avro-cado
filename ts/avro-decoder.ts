@@ -1,8 +1,8 @@
 // import Avro = require("avsc");
 import * as Avro from "avsc";
-import { optionsDefault, ACCEPT_HEADERS, decodeLogger } from "./config";
+import { processOptions, ACCEPT_HEADERS, decodeLogger } from "./config";
 import { handleError, aggregateOptions } from "./util";
-import { Options, DecoderTopicInfo, DecodeFunc } from "./types/types";
+import { DecoderInfo, DecodeFunc } from "./types/types";
 import * as rp from "request-promise";
 
 /**
@@ -12,11 +12,9 @@ import * as rp from "request-promise";
  * @param id - the schema id that should be retrieved
  * @return - The AVRO schema requested
  */
-const genSchemaRetriever = ({
-  subject,
-  schemaRegistry,
-  numRetries
-}: Options) => async (id: number): Promise<any> => {
+const genSchemaRetriever = ({ subject, schemaRegistry, numRetries }) => async (
+  id: number
+): Promise<any> => {
   const req = {
     uri: `${schemaRegistry}/schemas/ids/${id}`,
     headers: [{ Accept: ACCEPT_HEADERS }],
@@ -82,7 +80,7 @@ const genSchemaRetriever = ({
 const genCreateSchemaResolver = ({
   subject,
   retrieveSchema
-}: DecoderTopicInfo) => async (
+}: DecoderInfo) => async (
   id: number,
   schema: Avro.Type
 ): Promise<Avro.Resolver> => {
@@ -113,7 +111,7 @@ const genGetSchemaResolver = ({
   subject,
   resolversMap,
   createSchemaResolver
-}: DecoderTopicInfo) => async (
+}: DecoderInfo) => async (
   encoded: Buffer | null,
   schema: Avro.Type | null
 ): Promise<Avro.Resolver> => {
@@ -173,7 +171,7 @@ const decodePayload = async (
 const genMessageDecoder = ({
   schema,
   getSchemaResolver
-}: DecoderTopicInfo): DecodeFunc => async (buffer: Buffer): Promise<Object> => {
+}: DecoderInfo): DecodeFunc => async (buffer: Buffer): Promise<Object> => {
   return await decodePayload(
     buffer,
     schema,
@@ -185,35 +183,23 @@ const genMessageDecoder = ({
 /**                      EXPORTED INTERFACE                     **/
 /*****************************************************************/
 
-export const createDecoder = ({
-  schemaRegistry,
-  numRetries,
-  wrapUnions,
-  subject,
-  schema
-}: Options): DecodeFunc => {
+export const createDecoder = (opts): DecodeFunc => {
   // Aggregare the configuration values with defaults
-  const mergedOptions: Options = aggregateOptions(optionsDefault, {
-    schemaRegistry,
-    numRetries,
-    wrapUnions,
-    subject,
-    schema
-  });
+  const mergedOpts = processOptions(opts);
 
-  // topic info
-  const topicInfo: DecoderTopicInfo = {
-    subject: subject,
-    schema: schema ? Avro.Type.forSchema(schema) : null,
+  // decoder info
+  const decoderInfo: DecoderInfo = {
+    subject: mergedOpts.subject,
+    schema: mergedOpts.schema ? Avro.Type.forSchema(mergedOpts.schema) : null,
     resolversMap: {},
     retrieveSchema: null,
     createSchemaResolver: null,
     getSchemaResolver: null
   };
 
-  topicInfo.retrieveSchema = genSchemaRetriever(mergedOptions);
-  topicInfo.createSchemaResolver = genCreateSchemaResolver(topicInfo);
-  topicInfo.getSchemaResolver = genGetSchemaResolver(topicInfo);
+  decoderInfo.retrieveSchema = genSchemaRetriever(mergedOpts);
+  decoderInfo.createSchemaResolver = genCreateSchemaResolver(decoderInfo);
+  decoderInfo.getSchemaResolver = genGetSchemaResolver(decoderInfo);
 
-  return genMessageDecoder(topicInfo);
+  return genMessageDecoder(decoderInfo);
 };

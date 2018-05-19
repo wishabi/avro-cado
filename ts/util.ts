@@ -1,6 +1,5 @@
 import { Logger } from "@flipp/flipp-node-logger";
 import * as rp from "request-promise";
-import { Options } from "./types/types";
 
 export const handleError = (err: any, logger: Logger, msg: string): boolean => {
   if (err.statusCode && err.statusCode === 500) {
@@ -24,11 +23,8 @@ export const handleError = (err: any, logger: Logger, msg: string): boolean => {
   return false;
 };
 
-export const aggregateOptions = (
-  defaultConf: Options,
-  overrideConf: Options
-) => {
-  const aggOptions: Options = Object.assign({}, defaultConf, overrideConf);
+export const aggregateOptions = (defaultConf, overrideConf) => {
+  const aggOptions = Object.assign({}, defaultConf, overrideConf);
 
   if (!overrideConf) {
     return aggOptions;

@@ -1,6 +1,5 @@
 import { handleError, aggregateOptions } from "../ts/util";
 import { logger } from "./__fixtures__/logger";
-import { Options } from "../ts/types/types";
 
 /*
  *****************************************************************
@@ -139,10 +138,7 @@ const CONFIG_DATA = [
 describe("aggregateOptions", () => {
   it("should merge the two objects correctly", () => {
     CONFIG_DATA.forEach(test => {
-      const merged = aggregateOptions(
-        test.default as Options,
-        test.override as Options
-      );
+      const merged = aggregateOptions(test.default, test.override);
       expect(merged).toMatchSnapshot();
     });
   });
