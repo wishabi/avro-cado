@@ -36,7 +36,7 @@ describe("createEncoder", () => {
   it("should encode schema with auto-wrapped union types by default", async () => {
     expect(true === true);
   });
-}
+});
 
 // describe("createEncoder", () => {
 //   it("should encode schema with auto-wrapped union types by default", async () => {
