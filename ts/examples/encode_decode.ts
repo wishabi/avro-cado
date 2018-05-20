@@ -1,8 +1,5 @@
-// TODO: Implement encoder example
-
 import { createEncoder } from "../avro-encoder";
 import { createDecoder } from "../avro-decoder";
-// import { Options } from "../types/types";
 
 const avroSchema = {
   type: "record",
@@ -42,13 +39,15 @@ const encodeDecode = async () => {
    *****************************************************************
    */
 
-  console.log(message);
+  console.log(`Before encoder:               ${message}`);
 
   // create the encoder
   const encodeFunc = await createEncoder(opts);
 
   // encode a message
   const encoded: Buffer = encodeFunc(message);
+
+  console.log(`After encoder before decoder: ${encoded}`);
 
   /*
    *****************************************************************
@@ -61,7 +60,7 @@ const encodeDecode = async () => {
 
   const decoded = await decodeFunc(encoded);
 
-  console.log(decoded);
+  console.log(`After decoder:                ${decoded}`);
 };
 
 (async () => {
