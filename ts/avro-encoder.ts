@@ -1,6 +1,6 @@
-import { handleError, aggregateOptions } from "./util";
+import { handleError } from "./util";
 import { processOptions, ACCEPT_HEADERS } from "./config";
-import { EncoderInfo, EncodeFunc } from "./types/types";
+import { EncodeFunc } from "./types/types";
 import * as rp from "request-promise";
 import * as Avro from "avsc";
 
@@ -21,11 +21,6 @@ export const registerSchema = async ({
   numRetries,
   schema
 }): Promise<number> => {
-  // null schema so nothing to register
-  if (!schema) {
-    return -1;
-  }
-
   // craft the REST call to the schema registry
   const req = {
     method: "POST",
@@ -38,87 +33,49 @@ export const registerSchema = async ({
     resolveWithFullResponse: true
   };
 
-  let schemaId: number;
-  let error = null;
-
-  // implement retry on certain status/reason codes
-  for (let i = 0; i <= numRetries; i += 1) {
-    try {
-      schemaId = (await rp(req)).body.id;
-
-      // make sure to clear any previous errors
-      error = null;
-      break;
-    } catch (err) {
-      // save the error
-      error = err;
-
-      if (handleError(err) && i + 1 <= numRetries) {
-        // try and try again until we run out of retries
-        continue;
-      }
-
-      // fatal error
-      break;
+  try {
+    return (await rp(req)).body.id;
+  } catch (err) {
+    if (numRetries === 0 || handleError(err) === false) {
+      throw new Error(
+        `Failed to register schema for subject ${subject} :: ${err.message}`
+      );
     }
-  }
 
-  if (error) {
-    throw new Error(
-      `Failed to register schema for subject ${subject} :: ${error.message}`
-    );
+    return registerSchema({
+      subject,
+      schemaRegistry,
+      numRetries: numRetries - 1,
+      schema
+    });
   }
-
-  return schemaId;
 };
 
-/**
- * @todo Fix doc comment
- * Encode an Avro value into a message, as expected by Confluent's Kafka Avro
- * deserializer.
- *
- * @param message - message to encode
- */
-export const encodeData = (
-  payload: object | null,
-  schemaId: number,
+export const genMessageEncoder = (
   schema: Avro.Type,
-  length: number = 1024
-): Buffer => {
-  if (payload === null) {
+  schemaId: number
+): EncodeFunc => (message: object): Buffer => {
+  if (message === null) {
     // no payload so return it
     return null;
   }
 
-  if (schemaId === -1) {
-    // Bufferify the payload
-    return Buffer.from(JSON.stringify(payload));
+  let length: number = 1024;
+
+  for (;;) {
+    const buf: Buffer = new Buffer(length);
+    buf[0] = 0; // magic byte
+    buf.writeInt32BE(schemaId, 1);
+
+    const pos: number = schema.encode(message, buf, 5);
+    if (pos < 0) {
+      // the buffer was too short, we need to resize
+      length -= pos;
+      continue;
+    }
+
+    return buf.slice(0, pos);
   }
-
-  const buf: Buffer = new Buffer(length);
-  buf[0] = 0; // magic byte
-  buf.writeInt32BE(schemaId, 1);
-
-  const pos: number = schema.encode(payload, buf, 5);
-  if (pos < 0) {
-    // the buffer was too short, we need to resize
-    return encodeData(payload, schemaId, schema, length - pos);
-  }
-  return buf.slice(0, pos);
-};
-
-const genMessageEncoder = ({ schema, schemaId }: EncoderInfo): EncodeFunc => (
-  message: object
-): Buffer => {
-  return encodeData(message, schemaId, schema);
-};
-
-const createAvroSchema = ({ wrapUnions, schema }): Avro.Type | null => {
-  if (schema) {
-    return Avro.Type.forSchema(schema, { wrapUnions });
-  }
-
-  return null;
 };
 
 /*****************************************************************/
@@ -129,17 +86,10 @@ export const createEncoder = async (opts): Promise<EncodeFunc> => {
   // Aggregare the configuration values with defaults
   const mergedOpts = processOptions(opts);
 
-  // encoder info
-  const encoderInfo: EncoderInfo = {
-    schema: null,
-    schemaId: -1
-  };
-
-  // register the value and key schemas and parse them
-  [encoderInfo.schema, encoderInfo.schemaId] = await Promise.all([
-    createAvroSchema(mergedOpts),
-    registerSchema(mergedOpts)
-  ]);
-
-  return genMessageEncoder(encoderInfo);
+  return genMessageEncoder(
+    Avro.Type.forSchema(mergedOpts.schema, {
+      wrapUnions: mergedOpts.wrapUnions
+    }),
+    await registerSchema(mergedOpts)
+  );
 };

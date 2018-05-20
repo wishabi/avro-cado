@@ -42,9 +42,9 @@ describe("registerSchema", () => {
   });
 
   /*
-     * Retry once and on a retriable error and then fail
-     * one all configured retries have been exhausted
-     */
+   * Retry once and on a retriable error and then fail
+   * one all configured retries have been exhausted
+   */
   it("should retry 1 times on retriable error", async () => {
     rp
       .mockImplementationOnce(params => {
@@ -76,9 +76,9 @@ describe("registerSchema", () => {
   });
 
   /*
-     * Do NOT retry on a NON retriable error even though
-     * retries are configured
-     */
+   * Do NOT retry on a NON retriable error even though
+   * retries are configured
+   */
   it("should retry 0 times on fatal error", async () => {
     rp.mockImplementationOnce(params => {
       throw {

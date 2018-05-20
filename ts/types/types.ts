@@ -12,11 +12,6 @@ import * as Avro from "avsc";
  ********************************************************
  */
 
-export interface EncoderInfo {
-  schema: Avro.Type | null;
-  schemaId: number;
-}
-
 export interface EncodeFunc {
   (message: object): Buffer;
 }
