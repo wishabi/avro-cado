@@ -3,8 +3,6 @@ import { handleError } from "../../ts/util";
 import { ACCEPT_HEADERS } from "../../ts/config";
 import * as rp from "request-promise";
 
-import { logger } from "../__fixtures__/logger";
-
 const opts = {
   subject: "subject",
   schemaRegistry: "host",
@@ -54,9 +52,9 @@ describe("registerSchema", () => {
           statusCode: 500,
           error: {
             error_code: 50002,
-            message: "Retry error 500:50002"
+            message: "500:50002"
           },
-          message: "retry1"
+          message: "500:50002"
         };
       })
       .mockImplementationOnce(params => {
@@ -64,9 +62,9 @@ describe("registerSchema", () => {
           statusCode: 500,
           error: {
             error_code: 50002,
-            message: "Retry error 500:50002"
+            message: "500:50002"
           },
-          message: "retry1"
+          message: "500:50002"
         };
       });
 
@@ -87,9 +85,9 @@ describe("registerSchema", () => {
         statusCode: 600,
         error: {
           error_code: 50002,
-          message: "Retry error 500:50002"
+          message: "600:50002"
         },
-        message: "retry1"
+        message: "600:50002"
       };
     });
 

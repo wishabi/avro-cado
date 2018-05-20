@@ -1,5 +1,4 @@
 import { aggregateOptions } from "../ts/util";
-import { Logger } from "@flipp/flipp-node-logger";
 
 export const ACCEPT_HEADERS: string =
   "application/vnd.schemaregistry.v1+json, application/vnd.schemaregistry+json, application/json";
@@ -9,9 +8,6 @@ const optionsDefault = {
   numRetries: 10,
   wrapUnions: "auto"
 };
-
-export const encodeLogger: Logger = new Logger("encodeLogger");
-export const decodeLogger: Logger = new Logger("decodeLogger");
 
 export const processOptions = opts => {
   if (!opts.subject) {

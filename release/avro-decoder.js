@@ -40,9 +40,7 @@ const genSchemaRetriever = ({ subject, schemaRegistry, numRetries }) => (id) => 
         catch (err) {
             // save the error
             error = err;
-            // see if it can be retried
-            const retry = util_1.handleError(err, config_1.decodeLogger, "get schema");
-            if (retry && i + 1 <= numRetries) {
+            if (util_1.handleError(err) && i + 1 <= numRetries) {
                 // try and try again until we run out of retries
                 continue;
             }
@@ -51,8 +49,7 @@ const genSchemaRetriever = ({ subject, schemaRegistry, numRetries }) => (id) => 
         }
     }
     if (error) {
-        config_1.decodeLogger.error(`Failed to retrieve schema for subject ${subject} with id ${id}`, error, { subject, id });
-        throw new Error(`Failed to retrieve schema for subject ${subject} with id ${id}`);
+        throw new Error(`Failed to retrieve schema for subject ${subject} with id ${id} :: ${error.message}`);
     }
     return schema;
 });
@@ -73,7 +70,6 @@ const genCreateSchemaResolver = ({ subject, retrieveSchema }) => (id, schema) =>
      * Retrieve the schema by ID from the schema registry ...
      */
     const msgSchema = yield retrieveSchema(id);
-    config_1.decodeLogger.info("Retrieved schema", { id, subject });
     /**
      * ... parse the schema ...
      */
@@ -81,12 +77,11 @@ const genCreateSchemaResolver = ({ subject, retrieveSchema }) => (id, schema) =>
     /**
      * ... and create a resolver to the schema we know how to consume
      */
-    config_1.decodeLogger.info("Created resolver", { id, subject });
     try {
         return schema.createResolver(avSourceSchema);
     }
     catch (error) {
-        throw new Error("Incompatible schemas");
+        throw new Error(`Incompatible schemas :: ${error.message}`);
     }
 });
 const genGetSchemaResolver = ({ subject, resolversMap, createSchemaResolver }) => (encoded, schema) => __awaiter(this, void 0, void 0, function* () {
@@ -102,7 +97,6 @@ const genGetSchemaResolver = ({ subject, resolversMap, createSchemaResolver }) =
      */
     const id = encoded.slice(1, 5).readInt32BE(0);
     if (!resolversMap[id]) {
-        config_1.decodeLogger.info("Did not find resolver", { id, subject });
         /**
          * We do not have a resolver from the source schema to the
          * schema we support. Go and get a resolver.
@@ -115,7 +109,6 @@ const genGetSchemaResolver = ({ subject, resolversMap, createSchemaResolver }) =
          * to retrieve the schema
          */
         resolversMap[id] = createSchemaResolver(id, schema);
-        config_1.decodeLogger.info("Retrieving resolver", { id, subject });
     }
     return resolversMap[id];
 });

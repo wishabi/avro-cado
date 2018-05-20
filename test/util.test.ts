@@ -1,5 +1,4 @@
 import { handleError, aggregateOptions } from "../ts/util";
-import { logger } from "./__fixtures__/logger";
 
 /*
  *****************************************************************
@@ -47,16 +46,18 @@ const FATAL_ERRORS = [
 
 describe("handleError", () => {
   it("should return 'true' for an error eligible for retry", () => {
+    expect.assertions(RETRY_ERRORS.length);
+
     RETRY_ERRORS.forEach(retry_err => {
-      const retry: boolean = handleError(retry_err, logger, retry_err.message);
-      expect(retry).toMatchSnapshot();
+      expect(handleError(retry_err)).toMatchSnapshot();
     });
   });
 
   it("should return 'false' for an error NOT eligible for retry", () => {
+    expect.assertions(FATAL_ERRORS.length);
+
     FATAL_ERRORS.forEach(fatal_err => {
-      const retry: boolean = handleError(fatal_err, logger, fatal_err.message);
-      expect(retry).toMatchSnapshot();
+      expect(handleError(fatal_err)).toMatchSnapshot();
     });
   });
 });

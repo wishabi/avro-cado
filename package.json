@@ -19,7 +19,6 @@
     "typescript": "2.7.1"
   },
   "dependencies": {
-    "@flipp/flipp-node-logger": "1.0.0",
     "@types/node": "7.0.53",
     "avsc": "5.0.6",
     "request": "2.83.0",

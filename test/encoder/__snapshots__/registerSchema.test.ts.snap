@@ -2,6 +2,6 @@
 
 exports[`registerSchema should get the schema ID on success 1`] = `1`;
 
-exports[`registerSchema should retry 0 times on fatal error 1`] = `[Error: Failed to register schema for subject subject]`;
+exports[`registerSchema should retry 0 times on fatal error 1`] = `[Error: Failed to register schema for subject subject :: 600:50002]`;
 
-exports[`registerSchema should retry 1 times on retriable error 1`] = `[Error: Failed to register schema for subject subject]`;
+exports[`registerSchema should retry 1 times on retriable error 1`] = `[Error: Failed to register schema for subject subject :: 500:50002]`;

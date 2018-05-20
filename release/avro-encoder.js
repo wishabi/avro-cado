@@ -52,9 +52,7 @@ exports.registerSchema = ({ subject, schemaRegistry, numRetries, schema }) => __
         catch (err) {
             // save the error
             error = err;
-            // see if it can be retried
-            const retry = util_1.handleError(err, config_1.encodeLogger, "register schema");
-            if (retry && i + 1 <= numRetries) {
+            if (util_1.handleError(err) && i + 1 <= numRetries) {
                 // try and try again until we run out of retries
                 continue;
             }
@@ -63,16 +61,8 @@ exports.registerSchema = ({ subject, schemaRegistry, numRetries, schema }) => __
         }
     }
     if (error) {
-        config_1.encodeLogger.error(`Registering schema for ${subject}  failed`, error, {
-            subject,
-            schema
-        });
-        throw new Error(`Failed to register schema for subject ${subject}`);
+        throw new Error(`Failed to register schema for subject ${subject} :: ${error.message}`);
     }
-    config_1.encodeLogger.info(`Registered schema for subject ${subject}`, {
-        schemaId,
-        subject
-    });
     return schemaId;
 });
 /**

@@ -1,5 +1,5 @@
 import { handleError, aggregateOptions } from "./util";
-import { processOptions, ACCEPT_HEADERS, encodeLogger } from "./config";
+import { processOptions, ACCEPT_HEADERS } from "./config";
 import { EncoderInfo, EncodeFunc } from "./types/types";
 import * as rp from "request-promise";
 import * as Avro from "avsc";
@@ -53,10 +53,7 @@ export const registerSchema = async ({
       // save the error
       error = err;
 
-      // see if it can be retried
-      const retry: boolean = handleError(err, encodeLogger, "register schema");
-
-      if (retry && i + 1 <= numRetries) {
+      if (handleError(err) && i + 1 <= numRetries) {
         // try and try again until we run out of retries
         continue;
       }
@@ -67,18 +64,10 @@ export const registerSchema = async ({
   }
 
   if (error) {
-    encodeLogger.error(`Registering schema for ${subject}  failed`, error, {
-      subject,
-      schema
-    });
-
-    throw new Error(`Failed to register schema for subject ${subject}`);
+    throw new Error(
+      `Failed to register schema for subject ${subject} :: ${error.message}`
+    );
   }
-
-  encodeLogger.info(`Registered schema for subject ${subject}`, {
-    schemaId,
-    subject
-  });
 
   return schemaId;
 };

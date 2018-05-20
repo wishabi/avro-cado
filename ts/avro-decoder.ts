@@ -1,6 +1,6 @@
 // import Avro = require("avsc");
 import * as Avro from "avsc";
-import { processOptions, ACCEPT_HEADERS, decodeLogger } from "./config";
+import { processOptions, ACCEPT_HEADERS } from "./config";
 import { handleError, aggregateOptions } from "./util";
 import { DecoderInfo, DecodeFunc } from "./types/types";
 import * as rp from "request-promise";
@@ -37,10 +37,7 @@ const genSchemaRetriever = ({ subject, schemaRegistry, numRetries }) => async (
       // save the error
       error = err;
 
-      // see if it can be retried
-      const retry: boolean = handleError(err, decodeLogger, "get schema");
-
-      if (retry && i + 1 <= numRetries) {
+      if (handleError(err) && i + 1 <= numRetries) {
         // try and try again until we run out of retries
         continue;
       }
@@ -51,14 +48,10 @@ const genSchemaRetriever = ({ subject, schemaRegistry, numRetries }) => async (
   }
 
   if (error) {
-    decodeLogger.error(
-      `Failed to retrieve schema for subject ${subject} with id ${id}`,
-      error,
-      { subject, id }
-    );
-
     throw new Error(
-      `Failed to retrieve schema for subject ${subject} with id ${id}`
+      `Failed to retrieve schema for subject ${subject} with id ${id} :: ${
+        error.message
+      }`
     );
   }
 
@@ -88,7 +81,6 @@ const genCreateSchemaResolver = ({
    * Retrieve the schema by ID from the schema registry ...
    */
   const msgSchema = await retrieveSchema(id);
-  decodeLogger.info("Retrieved schema", { id, subject });
 
   /**
    * ... parse the schema ...
@@ -98,12 +90,11 @@ const genCreateSchemaResolver = ({
   /**
    * ... and create a resolver to the schema we know how to consume
    */
-  decodeLogger.info("Created resolver", { id, subject });
 
   try {
     return schema.createResolver(avSourceSchema);
   } catch (error) {
-    throw new Error("Incompatible schemas");
+    throw new Error(`Incompatible schemas :: ${error.message}`);
   }
 };
 
@@ -130,8 +121,6 @@ const genGetSchemaResolver = ({
   const id: number = encoded.slice(1, 5).readInt32BE(0);
 
   if (!resolversMap[id]) {
-    decodeLogger.info("Did not find resolver", { id, subject });
-
     /**
      * We do not have a resolver from the source schema to the
      * schema we support. Go and get a resolver.
@@ -144,7 +133,6 @@ const genGetSchemaResolver = ({
      * to retrieve the schema
      */
     resolversMap[id] = createSchemaResolver(id, schema);
-    decodeLogger.info("Retrieving resolver", { id, subject });
   }
 
   return resolversMap[id];
