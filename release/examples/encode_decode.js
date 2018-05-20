@@ -1,5 +1,4 @@
 "use strict";
-// TODO: Implement encoder example
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -11,7 +10,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const avro_encoder_1 = require("../avro-encoder");
 const avro_decoder_1 = require("../avro-decoder");
-// import { Options } from "../types/types";
 const avroSchema = {
     type: "record",
     name: "TestMessage",
@@ -46,11 +44,12 @@ const encodeDecode = () => __awaiter(this, void 0, void 0, function* () {
      *                                                  encoder exmple
      *****************************************************************
      */
-    console.log(message);
+    console.log(`Before encoder:               ${message}`);
     // create the encoder
     const encodeFunc = yield avro_encoder_1.createEncoder(opts);
     // encode a message
     const encoded = encodeFunc(message);
+    console.log(`After encoder before decoder: ${encoded}`);
     /*
      *****************************************************************
      *                                                  decoder exmple
@@ -59,7 +58,7 @@ const encodeDecode = () => __awaiter(this, void 0, void 0, function* () {
     // create a decoder
     const decodeFunc = avro_decoder_1.createDecoder(opts);
     const decoded = yield decodeFunc(encoded);
-    console.log(decoded);
+    console.log(`After decoder:                ${decoded}`);
 });
 (() => __awaiter(this, void 0, void 0, function* () {
     yield encodeDecode();

@@ -1,4 +1,3 @@
-/// <reference types="node" />
 import { EncodeFunc } from "./types/types";
 /**
  * Register the specified schema for the specified topic under the
@@ -17,14 +16,7 @@ export declare const registerSchema: ({ subject, schemaRegistry, numRetries, sch
     numRetries: any;
     schema: any;
 }) => Promise<number>;
-/**
- * @todo Fix doc comment
- * Encode an Avro value into a message, as expected by Confluent's Kafka Avro
- * deserializer.
- *
- * @param message - message to encode
- */
-export declare const encodeData: (payload: object, schemaId: number, schema: any, length?: number) => Buffer;
+export declare const genMessageEncoder: (schema: any, schemaId: number) => EncodeFunc;
 /*****************************************************************/
 /**                      EXPORTED INTERFACE                     **/
 /*****************************************************************/
