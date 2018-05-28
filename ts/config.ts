@@ -1,15 +1,18 @@
 import { aggregateOptions } from "../ts/util";
+import { Options } from "./types/types";
 
 export const ACCEPT_HEADERS: string =
   "application/vnd.schemaregistry.v1+json, application/vnd.schemaregistry+json, application/json";
 
-const optionsDefault = {
+const optionsDefault: Options = {
   schemaRegistry: "http://localhost:8081",
   numRetries: 10,
-  wrapUnions: "auto"
+  wrapUnions: "auto",
+  subject: null,
+  schema: null
 };
 
-export const processOptions = opts => {
+export const processOptions = (opts: Options): Options => {
   if (!opts.subject) {
     throw new Error("subject key missing");
   }
@@ -18,6 +21,6 @@ export const processOptions = opts => {
     throw new Error("schema key missing");
   }
 
-  // Aggregare the configuration values with defaults
+  // Aggregate the configuration values with defaults
   return aggregateOptions(optionsDefault, opts);
 };

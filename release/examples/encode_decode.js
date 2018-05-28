@@ -44,12 +44,12 @@ const encodeDecode = () => __awaiter(this, void 0, void 0, function* () {
      *                                                  encoder exmple
      *****************************************************************
      */
-    console.log(`Before encoder:               ${message}`);
+    console.log(`Before encoder:               ${JSON.stringify(message)}`);
     // create the encoder
     const encodeFunc = yield avro_encoder_1.createEncoder(opts);
     // encode a message
     const encoded = encodeFunc(message);
-    console.log(`After encoder before decoder: ${encoded}`);
+    console.log(`After encoder before decoder: ${encoded.toString("hex")}`);
     /*
      *****************************************************************
      *                                                  decoder exmple
@@ -58,7 +58,7 @@ const encodeDecode = () => __awaiter(this, void 0, void 0, function* () {
     // create a decoder
     const decodeFunc = avro_decoder_1.createDecoder(opts);
     const decoded = yield decodeFunc(encoded);
-    console.log(`After decoder:                ${decoded}`);
+    console.log(`After decoder:                ${JSON.stringify(decoded)}`);
 });
 (() => __awaiter(this, void 0, void 0, function* () {
     yield encodeDecode();

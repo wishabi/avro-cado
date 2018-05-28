@@ -7,13 +7,14 @@ import { processOptions } from "../ts/config";
  */
 
 const ERROR_OPTIONS = [
+  // schema key missing
   {
     schemaRegistry: "http://localhost:8081",
     numRetries: 10,
     wrapUnions: "auto",
     subject: "subject"
   },
-
+  // subject key missing
   {
     schemaRegistry: "http://localhost:8081",
     numRetries: 10,

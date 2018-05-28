@@ -1,7 +1,16 @@
-import { registerSchema } from "../../ts/avro-encoder";
-import { handleError } from "../../ts/util";
-import { ACCEPT_HEADERS } from "../../ts/config";
+jest.mock("request-promise", () => {
+  return jest.fn();
+});
+
 import * as rp from "request-promise";
+import { registerSchema } from "../../ts/avro-encoder";
+import {
+  handleError,
+  RETRY_STATUS_CODE_500,
+  RETRY_ERROR_CODE_50002,
+  RETRY_ERROR_CODE_50003
+} from "../../ts/util";
+import { ACCEPT_HEADERS } from "../../ts/config";
 
 const opts = {
   subject: "subject",
@@ -9,10 +18,6 @@ const opts = {
   numRetries: 1,
   schema: "schema"
 };
-
-jest.mock("request-promise", () => {
-  return jest.fn();
-});
 
 describe("registerSchema", () => {
   it("should get the schema ID on success", async () => {
@@ -45,13 +50,13 @@ describe("registerSchema", () => {
    * Retry once and on a retriable error and then fail
    * one all configured retries have been exhausted
    */
-  it("should retry 1 times on retriable error", async () => {
+  it("should retry 1 time on retriable error code 50002", async () => {
     rp
       .mockImplementationOnce(params => {
         throw {
-          statusCode: 500,
+          statusCode: RETRY_STATUS_CODE_500,
           error: {
-            error_code: 50002,
+            error_code: RETRY_ERROR_CODE_50002,
             message: "500:50002"
           },
           message: "500:50002"
@@ -59,9 +64,9 @@ describe("registerSchema", () => {
       })
       .mockImplementationOnce(params => {
         throw {
-          statusCode: 500,
+          statusCode: RETRY_STATUS_CODE_500,
           error: {
-            error_code: 50002,
+            error_code: RETRY_ERROR_CODE_50002,
             message: "500:50002"
           },
           message: "500:50002"
@@ -73,6 +78,36 @@ describe("registerSchema", () => {
     await expect(registerSchema(opts)).rejects.toMatchSnapshot();
 
     expect(rp).toHaveBeenCalledTimes(3);
+  });
+
+  it("should retry 1 time on retriable error code 50003", async () => {
+    rp
+      .mockImplementationOnce(params => {
+        throw {
+          statusCode: RETRY_STATUS_CODE_500,
+          error: {
+            error_code: RETRY_ERROR_CODE_50003,
+            message: "500:50003"
+          },
+          message: "500:50003"
+        };
+      })
+      .mockImplementationOnce(params => {
+        throw {
+          statusCode: RETRY_STATUS_CODE_500,
+          error: {
+            error_code: RETRY_ERROR_CODE_50003,
+            message: "500:50003"
+          },
+          message: "500:50003"
+        };
+      });
+
+    expect.assertions(2);
+
+    await expect(registerSchema(opts)).rejects.toMatchSnapshot();
+
+    expect(rp).toHaveBeenCalledTimes(5);
   });
 
   /*
@@ -95,6 +130,6 @@ describe("registerSchema", () => {
 
     await expect(registerSchema(opts)).rejects.toMatchSnapshot();
 
-    expect(rp).toHaveBeenCalledTimes(4);
+    expect(rp).toHaveBeenCalledTimes(6);
   });
 });

@@ -1,7 +1,5 @@
-jest.unmock("avsc");
-
-import { genMessageEncoder } from "../../ts/avro-encoder";
 import * as Avro from "avsc";
+import { genMessageEncoder } from "../../ts/avro-encoder";
 
 const AVRO_SCHEMA = {
   type: "record",

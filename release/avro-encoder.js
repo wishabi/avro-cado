@@ -8,13 +8,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const util_1 = require("./util");
-const config_1 = require("./config");
 const rp = require("request-promise");
 const Avro = require("avsc");
+const util_1 = require("./util");
+const config_1 = require("./config");
 /**
  * Register the specified schema for the specified topic under the
- * specifed subject. The subject used is: <topic>-<key|value>
+ * specified subject.
+ *
+ * On an error eligible for retry, keep trying up to the specified number
+ * of times. Once all retries have been exhausted, any error is considered
+ * a fatal one.
+ *
  *
  * @param subject - the subject under which to register the schema
  * @param schemaRegistry - the schema registry host
@@ -23,14 +28,14 @@ const Avro = require("avsc");
  *
  * @return - A Promise holding the id of the schema in the schema registry
  */
-exports.registerSchema = ({ subject, schemaRegistry, numRetries, schema }) => __awaiter(this, void 0, void 0, function* () {
+exports.registerSchema = (opts) => __awaiter(this, void 0, void 0, function* () {
     // craft the REST call to the schema registry
     const req = {
         method: "POST",
-        uri: `${schemaRegistry}/subjects/${subject}/versions`,
+        uri: `${opts.schemaRegistry}/subjects/${opts.subject}/versions`,
         headers: { Accept: config_1.ACCEPT_HEADERS },
         body: {
-            schema: JSON.stringify(schema)
+            schema: JSON.stringify(opts.schema)
         },
         json: true,
         resolveWithFullResponse: true
@@ -39,17 +44,22 @@ exports.registerSchema = ({ subject, schemaRegistry, numRetries, schema }) => __
         return (yield rp(req)).body.id;
     }
     catch (err) {
-        if (numRetries === 0 || util_1.handleError(err) === false) {
-            throw new Error(`Failed to register schema for subject ${subject} :: ${err.message}`);
+        if (opts.numRetries === 0 || util_1.handleError(err) === false) {
+            throw new Error(`Failed to register schema for subject ${opts.subject} :: ${err.message}`);
         }
-        return exports.registerSchema({
-            subject,
-            schemaRegistry,
-            numRetries: numRetries - 1,
-            schema
+        const o = Object.assign({}, opts, {
+            numRetries: opts.numRetries - 1
         });
+        return exports.registerSchema(o);
     }
 });
+/**
+ * Create a function that takes a message JSON object
+ * and Avro encodes it
+ *
+ * @param message - the JSON object to Avro encode
+ * @return - The Avro encoded object as a Buffer
+ */
 exports.genMessageEncoder = (schema, schemaId) => (message) => {
     if (message === null) {
         // no payload so return it
@@ -73,7 +83,7 @@ exports.genMessageEncoder = (schema, schemaId) => (message) => {
 /**                      EXPORTED INTERFACE                     **/
 /*****************************************************************/
 exports.createEncoder = (opts) => __awaiter(this, void 0, void 0, function* () {
-    // Aggregare the configuration values with defaults
+    // Aggregate the configuration values with defaults
     const mergedOpts = config_1.processOptions(opts);
     return exports.genMessageEncoder(Avro.Type.forSchema(mergedOpts.schema, {
         wrapUnions: mergedOpts.wrapUnions

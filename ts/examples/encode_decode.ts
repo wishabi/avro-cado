@@ -39,7 +39,7 @@ const encodeDecode = async () => {
    *****************************************************************
    */
 
-  console.log(`Before encoder:               ${message}`);
+  console.log(`Before encoder:               ${JSON.stringify(message)}`);
 
   // create the encoder
   const encodeFunc = await createEncoder(opts);
@@ -47,7 +47,7 @@ const encodeDecode = async () => {
   // encode a message
   const encoded: Buffer = encodeFunc(message);
 
-  console.log(`After encoder before decoder: ${encoded}`);
+  console.log(`After encoder before decoder: ${encoded.toString("hex")}`);
 
   /*
    *****************************************************************
@@ -60,7 +60,7 @@ const encodeDecode = async () => {
 
   const decoded = await decodeFunc(encoded);
 
-  console.log(`After decoder:                ${decoded}`);
+  console.log(`After decoder:                ${JSON.stringify(decoded)}`);
 };
 
 (async () => {

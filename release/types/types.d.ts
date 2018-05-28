@@ -1,5 +1,12 @@
 /// <reference types="node" />
 import * as Avro from "avsc";
+export interface Options {
+    schemaRegistry: string;
+    numRetries: number;
+    schema: any;
+    subject: string;
+    wrapUnions?: string;
+}
 export interface EncodeFunc {
     (message: object): Buffer;
 }

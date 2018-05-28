@@ -1,7 +1,12 @@
-import { EncodeFunc } from "./types/types";
+import { EncodeFunc, Options } from "./types/types";
 /**
  * Register the specified schema for the specified topic under the
- * specifed subject. The subject used is: <topic>-<key|value>
+ * specified subject.
+ *
+ * On an error eligible for retry, keep trying up to the specified number
+ * of times. Once all retries have been exhausted, any error is considered
+ * a fatal one.
+ *
  *
  * @param subject - the subject under which to register the schema
  * @param schemaRegistry - the schema registry host
@@ -10,14 +15,16 @@ import { EncodeFunc } from "./types/types";
  *
  * @return - A Promise holding the id of the schema in the schema registry
  */
-export declare const registerSchema: ({ subject, schemaRegistry, numRetries, schema }: {
-    subject: any;
-    schemaRegistry: any;
-    numRetries: any;
-    schema: any;
-}) => Promise<number>;
+export declare const registerSchema: (opts: Options) => Promise<number>;
+/**
+ * Create a function that takes a message JSON object
+ * and Avro encodes it
+ *
+ * @param message - the JSON object to Avro encode
+ * @return - The Avro encoded object as a Buffer
+ */
 export declare const genMessageEncoder: (schema: any, schemaId: number) => EncodeFunc;
 /*****************************************************************/
 /**                      EXPORTED INTERFACE                     **/
 /*****************************************************************/
-export declare const createEncoder: (opts: any) => Promise<EncodeFunc>;
+export declare const createEncoder: (opts: Options) => Promise<EncodeFunc>;

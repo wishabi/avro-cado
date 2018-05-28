@@ -4,22 +4,23 @@
   "description": "Flipp Avro Encoder Decoder",
   "main": "release/index.js",
   "typings": "release/index",
-  "license": "MIT",
   "author": "Petre Neytchev",
   "scripts": {
     "test": "jest",
-    "package": "(REL_DIR='./release/'; git checkout HEAD -- ${REL_DIR} && git rm -rf ${REL_DIR} && tsc && git add ${REL_DIR})",
+    "package":
+      "(REL_DIR='./release/'; git checkout HEAD -- ${REL_DIR} && git rm -rf ${REL_DIR} && tsc && git add ${REL_DIR})",
     "build": "(REL_DIR='./release/'; tsc)"
   },
   "devDependencies": {
+    "@types/node": "7.0.53",
     "@types/jest": "^22.1.1",
+    "@types/request-promise": "^4.1.41",
     "jest": "^22.1.4",
     "jest-cli": "^22.1.4",
     "ts-jest": "^22.0.2",
     "typescript": "2.7.1"
   },
   "dependencies": {
-    "@types/node": "7.0.53",
     "avsc": "5.0.6",
     "request": "2.83.0",
     "request-promise": "4.2.2"
@@ -34,18 +35,8 @@
       "^.+\\.tsx?$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
     },
     "testRegex": "(/tests/.*|\\.test)\\.(ts|tsx|js)$",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js",
-      "json"
-    ]
+    "moduleFileExtensions": ["ts", "tsx", "js", "json"]
   },
-  "unmockedModulePathPatterns": [
-    "<rootDir>/node_modules"
-  ],
-  "moduleDirectories": [
-    "<rootDir>/node_modules",
-    "<rootDir>/ts"
-  ]
+  "unmockedModulePathPatterns": ["<rootDir>/node_modules"],
+  "moduleDirectories": ["<rootDir>/node_modules", "<rootDir>/ts"]
 }

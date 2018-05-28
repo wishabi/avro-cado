@@ -6,6 +6,14 @@ import * as Avro from "avsc";
  ********************************************************
  */
 
+export interface Options {
+  schemaRegistry: string;
+  numRetries: number;
+  schema: any;
+  subject: string;
+  wrapUnions?: string;
+}
+
 /*
  ********************************************************
  *                                          ENCODER TYPES

@@ -8,17 +8,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-// import Avro = require("avsc");
 const Avro = require("avsc");
+const rp = require("request-promise");
 const config_1 = require("./config");
 const util_1 = require("./util");
-const rp = require("request-promise");
 /**
- * Retrieve the AVRO schema from the schema registry. On a
- * retrieable error, retry up to the configure number of times
+ * Retrieve the Avro schema from the schema registry. On an error
+ * eligible for retry, try up to the configure number of times
  *
  * @param id - the schema id that should be retrieved
- * @return - The AVRO schema requested
+ * @return - The Avro schema requested
  */
 const genSchemaRetriever = ({ subject, schemaRegistry, numRetries }) => (id) => __awaiter(this, void 0, void 0, function* () {
     const req = {
@@ -40,12 +39,9 @@ const genSchemaRetriever = ({ subject, schemaRegistry, numRetries }) => (id) => 
         catch (err) {
             // save the error
             error = err;
-            if (util_1.handleError(err) && i + 1 <= numRetries) {
-                // try and try again until we run out of retries
-                continue;
+            if (!util_1.handleError(err)) {
+                break;
             }
-            // fatal error
-            break;
         }
     }
     if (error) {
@@ -54,16 +50,16 @@ const genSchemaRetriever = ({ subject, schemaRegistry, numRetries }) => (id) => 
     return schema;
 });
 /**
- * Retrieve the AVRO schema from the schema registry, parse it,
- * and create a resolver to the local AVRO schema.
+ * Retrieve the Avro schema from the schema registry, parse it,
+ * and create a resolver to the local Avro schema.
  *
  * @param subject - The subject under which the schema is registered
  * @param id - the schema id that should be the source for the
  *             schema resolver
- * @param avroSchema - the target AVRO schema for the resolver
- * @return - The AVRO schema resolver used to convert messages
- *           encoded with the specified AVRO schema to the local
- *           AVRO schema format
+ * @param schema - the target Avro schema for the resolver
+ * @return - The Avro schema resolver used to convert messages
+ *           encoded with the specified Avro schema to the local
+ *           Avro schema format
  */
 const genCreateSchemaResolver = ({ subject, retrieveSchema }) => (id, schema) => __awaiter(this, void 0, void 0, function* () {
     /**
@@ -77,13 +73,17 @@ const genCreateSchemaResolver = ({ subject, retrieveSchema }) => (id, schema) =>
     /**
      * ... and create a resolver to the schema we know how to consume
      */
-    try {
-        return schema.createResolver(avSourceSchema);
-    }
-    catch (error) {
-        throw new Error(`Incompatible schemas :: ${error.message}`);
-    }
+    return schema.createResolver(avSourceSchema);
 });
+/**
+ * Create and return an Avro schema resolver, if one doesn't already
+ * exist for the schema id in the encoded message to the schema passed
+ * in
+ *
+ * @param encoded - The Avro encoded buffer
+ * @param schema - the target Avro schema for the resolver
+ * @return - The promise that holds the Avro resolver
+ */
 const genGetSchemaResolver = ({ subject, resolversMap, createSchemaResolver }) => (encoded, schema) => __awaiter(this, void 0, void 0, function* () {
     // Do not attempt to get a resolver
     if (!schema) {
@@ -104,7 +104,7 @@ const genGetSchemaResolver = ({ subject, resolversMap, createSchemaResolver }) =
          * IMPORTANT
          *
          * We store a promise of a resolver in our hashmap. The reason is that
-         * if we have multipe messages beig handled asynchronously, we do not
+         * if we have multiple messages being handled asynchronously, we do not
          * want all of them to flood the schema registry with REST calls
          * to retrieve the schema
          */
@@ -112,6 +112,18 @@ const genGetSchemaResolver = ({ subject, resolversMap, createSchemaResolver }) =
     }
     return resolversMap[id];
 });
+/**
+ * Avro decode the passed in data
+ *
+ * @param encoded - The Avro encoded buffer
+ * @param schema - the target Avro schema to which the decoded payload
+ *                 should conform
+ * @param resolver - a promise for an Avro resolver that will
+ *                   convert the data from the schema with which
+ *                   it was encoded to the schema which we want to
+ *                   read
+ * @return - The promise that holds the Avro decoded payload
+ */
 const decodePayload = (encoded, schema, resolver) => __awaiter(this, void 0, void 0, function* () {
     // Do not attempt to avro decode if we have no target schema specified
     if (!schema) {
@@ -123,14 +135,25 @@ const decodePayload = (encoded, schema, resolver) => __awaiter(this, void 0, voi
     }
     return schema.decode(encoded.slice(5), 0, yield resolver).value;
 });
+/**
+ * Create an Avro decoder based on the specified parameters and
+ * return a closure that takes an encoded Buffer and decodes it
+ *
+ * @param schema - the target Avro schema to which the decoded payload
+ *                 should conform
+ * @param getSchemaResolver - a function used to retrieve the resolver
+ *                            object that will be used to decode the payload
+ * @param buffer - The Avro encoded buffer
+ * @return - The Avro decoded object that conforms to the specified schema
+ */
 const genMessageDecoder = ({ schema, getSchemaResolver }) => (buffer) => __awaiter(this, void 0, void 0, function* () {
-    return yield decodePayload(buffer, schema, yield getSchemaResolver(buffer, schema));
+    return yield decodePayload(buffer, schema, getSchemaResolver(buffer, schema));
 });
 /*****************************************************************/
 /**                      EXPORTED INTERFACE                     **/
 /*****************************************************************/
 exports.createDecoder = (opts) => {
-    // Aggregare the configuration values with defaults
+    // Aggregate the configuration values with defaults
     const mergedOpts = config_1.processOptions(opts);
     // decoder info
     const decoderInfo = {

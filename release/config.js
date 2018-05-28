@@ -5,16 +5,18 @@ exports.ACCEPT_HEADERS = "application/vnd.schemaregistry.v1+json, application/vn
 const optionsDefault = {
     schemaRegistry: "http://localhost:8081",
     numRetries: 10,
-    wrapUnions: "auto"
+    wrapUnions: "auto",
+    subject: null,
+    schema: null
 };
-exports.processOptions = opts => {
+exports.processOptions = (opts) => {
     if (!opts.subject) {
         throw new Error("subject key missing");
     }
     if (!opts.schema) {
         throw new Error("schema key missing");
     }
-    // Aggregare the configuration values with defaults
+    // Aggregate the configuration values with defaults
     return util_1.aggregateOptions(optionsDefault, opts);
 };
 //# sourceMappingURL=config.js.map
