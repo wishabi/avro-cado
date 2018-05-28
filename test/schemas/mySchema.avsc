@@ -1,0 +1,9 @@
+{
+     "type": "record",
+     "namespace": "com.example",
+     "name": "testSchema",
+     "fields": [
+       { "name": "baz", "type": "long", "default": -1 },
+       { "name": "foo", "type": "string", "default": "" }
+     ]
+}
