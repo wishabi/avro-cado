@@ -69,7 +69,7 @@ exports.genMessageEncoder = (schema, schemaId) => (payload) => {
         return null;
     }
     // create the avro header
-    const header = new Buffer(5);
+    const header = Buffer.alloc(5);
     // magic byte
     header.writeInt8(0, 0);
     // schema id

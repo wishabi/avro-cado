@@ -15,11 +15,9 @@ export declare type ResolverMap = {
 };
 export interface DecoderInfo {
     subject: string;
-    schema: Avro.Type | null;
+    schema: Avro.Type;
     resolversMap: ResolverMap;
-    retrieveSchema: Function;
     createSchemaResolver: Function;
-    getSchemaResolver: Function;
 }
 export interface DecodeFunc {
     (buffer: Buffer): Promise<Object>;
