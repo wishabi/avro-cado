@@ -23,17 +23,12 @@ const genSchemaRetriever = ({
     resolveWithFullResponse: true
   };
 
-  let schema: object;
   let error = null;
 
   // implement retry on certain status/reason codes
   for (let i = 0; i <= numRetries; i += 1) {
     try {
-      schema = JSON.parse((await rp(req)).body.schema);
-
-      // make sure to clear any previous errors
-      error = null;
-      break;
+      return JSON.parse((await rp(req)).body.schema);
     } catch (err) {
       // save the error
       error = err;
@@ -44,15 +39,11 @@ const genSchemaRetriever = ({
     }
   }
 
-  if (error) {
-    throw new Error(
-      `Failed to retrieve schema for subject ${subject} with id ${id} :: ${
-        error.message
-      }`
-    );
-  }
-
-  return schema;
+  throw new Error(
+    `Failed to retrieve schema for subject ${subject} with id ${id} :: ${
+      error.message
+    }`
+  );
 };
 
 /**

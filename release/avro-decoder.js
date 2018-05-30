@@ -26,15 +26,11 @@ const genSchemaRetriever = ({ subject, schemaRegistry, numRetries }) => (id) => 
         json: true,
         resolveWithFullResponse: true
     };
-    let schema;
     let error = null;
     // implement retry on certain status/reason codes
     for (let i = 0; i <= numRetries; i += 1) {
         try {
-            schema = JSON.parse((yield rp(req)).body.schema);
-            // make sure to clear any previous errors
-            error = null;
-            break;
+            return JSON.parse((yield rp(req)).body.schema);
         }
         catch (err) {
             // save the error
@@ -44,10 +40,7 @@ const genSchemaRetriever = ({ subject, schemaRegistry, numRetries }) => (id) => 
             }
         }
     }
-    if (error) {
-        throw new Error(`Failed to retrieve schema for subject ${subject} with id ${id} :: ${error.message}`);
-    }
-    return schema;
+    throw new Error(`Failed to retrieve schema for subject ${subject} with id ${id} :: ${error.message}`);
 });
 /**
  * Retrieve the Avro schema from the schema registry, parse it,

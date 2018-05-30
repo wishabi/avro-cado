@@ -15,7 +15,7 @@ import { EncodeFunc, Options } from "./types/types";
  *
  * @return - A Promise holding the id of the schema in the schema registry
  */
-export declare const registerSchema: (opts: Options) => Promise<number>;
+export declare const registerSchema: ({ subject, schemaRegistry, schema, numRetries }: Options) => Promise<number>;
 /**
  * Create a function that takes a message JSON object
  * and Avro encodes it

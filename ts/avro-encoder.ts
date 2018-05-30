@@ -20,36 +20,43 @@ import { EncodeFunc, Options } from "./types/types";
  *
  * @return - A Promise holding the id of the schema in the schema registry
  */
-export const registerSchema = async (opts: Options): Promise<number> => {
+export const registerSchema = async ({
+  subject,
+  schemaRegistry,
+  schema,
+  numRetries
+}: Options): Promise<number> => {
   // craft the REST call to the schema registry
   const req = {
     method: "POST",
-    uri: `${opts.schemaRegistry}/subjects/${opts.subject}/versions`,
+    uri: `${schemaRegistry}/subjects/${subject}/versions`,
     headers: { Accept: ACCEPT_HEADERS },
     body: {
-      schema: JSON.stringify(opts.schema)
+      schema: JSON.stringify(schema)
     },
     json: true,
     resolveWithFullResponse: true
   };
 
-  try {
-    return (await rp(req)).body.id;
-  } catch (err) {
-    if (opts.numRetries === 0 || handleError(err) === false) {
-      throw new Error(
-        `Failed to register schema for subject ${opts.subject} :: ${
-          err.message
-        }`
-      );
+  let error = null;
+
+  // implement retry on certain status/reason codes
+  for (let i = 0; i <= numRetries; i += 1) {
+    try {
+      return (await rp(req)).body.id;
+    } catch (err) {
+      // save the error
+      error = err;
+
+      if (!handleError(err)) {
+        break;
+      }
     }
-
-    const o: Options = Object.assign({}, opts, {
-      numRetries: opts.numRetries - 1
-    });
-
-    return registerSchema(o);
   }
+
+  throw new Error(
+    `Failed to register schema for subject ${subject} :: ${error.message}`
+  );
 };
 
 /**

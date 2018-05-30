@@ -28,30 +28,33 @@ const config_1 = require("./config");
  *
  * @return - A Promise holding the id of the schema in the schema registry
  */
-exports.registerSchema = (opts) => __awaiter(this, void 0, void 0, function* () {
+exports.registerSchema = ({ subject, schemaRegistry, schema, numRetries }) => __awaiter(this, void 0, void 0, function* () {
     // craft the REST call to the schema registry
     const req = {
         method: "POST",
-        uri: `${opts.schemaRegistry}/subjects/${opts.subject}/versions`,
+        uri: `${schemaRegistry}/subjects/${subject}/versions`,
         headers: { Accept: config_1.ACCEPT_HEADERS },
         body: {
-            schema: JSON.stringify(opts.schema)
+            schema: JSON.stringify(schema)
         },
         json: true,
         resolveWithFullResponse: true
     };
-    try {
-        return (yield rp(req)).body.id;
-    }
-    catch (err) {
-        if (opts.numRetries === 0 || util_1.handleError(err) === false) {
-            throw new Error(`Failed to register schema for subject ${opts.subject} :: ${err.message}`);
+    let error = null;
+    // implement retry on certain status/reason codes
+    for (let i = 0; i <= numRetries; i += 1) {
+        try {
+            return (yield rp(req)).body.id;
         }
-        const o = Object.assign({}, opts, {
-            numRetries: opts.numRetries - 1
-        });
-        return exports.registerSchema(o);
+        catch (err) {
+            // save the error
+            error = err;
+            if (!util_1.handleError(err)) {
+                break;
+            }
+        }
     }
+    throw new Error(`Failed to register schema for subject ${subject} :: ${error.message}`);
 });
 /**
  * Create a function that takes a message JSON object
