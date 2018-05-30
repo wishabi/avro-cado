@@ -58,6 +58,7 @@ const encodeDecode = async () => {
   // create a decoder
   const decodeFunc = createDecoder(opts);
 
+  // decode a message
   const decoded = await decodeFunc(encoded);
 
   console.log(`After decoder:                ${JSON.stringify(decoded)}`);
