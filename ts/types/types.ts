@@ -34,11 +34,9 @@ export type ResolverMap = { [index: number]: Promise<Avro.Resolver> };
 
 export interface DecoderInfo {
   subject: string;
-  schema: Avro.Type | null;
+  schema: Avro.Type;
   resolversMap: ResolverMap;
-  retrieveSchema: Function;
   createSchemaResolver: Function;
-  getSchemaResolver: Function;
 }
 
 export interface DecodeFunc {

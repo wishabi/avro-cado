@@ -3,7 +3,7 @@ jest.mock("request-promise", () => {
 });
 
 import * as rp from "request-promise";
-import { registerSchema } from "../../ts/avro-encoder";
+import { retrieveSchema } from "../../ts/avro-decoder";
 import {
   handleError,
   RETRY_STATUS_CODE_500,
@@ -20,30 +20,30 @@ const opts: Options = {
   schema: { data: "schema" }
 };
 
-describe("registerSchema", () => {
-  it("should get the schema ID on success", async () => {
+const SCHEMA_ID = 1;
+
+describe("genSchemaRetriever", () => {
+  it("should get the schema on success", async () => {
     rp.mockImplementationOnce(params => {
       return {
         body: {
-          id: 1
+          schema: JSON.stringify(opts.schema)
         }
       };
     });
 
     expect.assertions(3);
 
-    const schemaId = await registerSchema(opts);
+    const schema = await retrieveSchema(opts, SCHEMA_ID);
 
     expect(rp).toHaveBeenCalledTimes(1);
 
-    expect(schemaId).toMatchSnapshot();
+    expect(schema).toMatchSnapshot();
     expect(rp).toHaveBeenCalledWith({
-      body: { schema: JSON.stringify(opts.schema) },
       headers: { Accept: ACCEPT_HEADERS },
       json: true,
-      method: "POST",
       resolveWithFullResponse: true,
-      uri: `${opts.schemaRegistry}/subjects/${opts.subject}/versions`
+      uri: `${opts.schemaRegistry}/schemas/ids/${SCHEMA_ID}`
     });
   });
 
@@ -76,7 +76,7 @@ describe("registerSchema", () => {
 
     expect.assertions(2);
 
-    await expect(registerSchema(opts)).rejects.toMatchSnapshot();
+    await expect(retrieveSchema(opts, SCHEMA_ID)).rejects.toMatchSnapshot();
 
     expect(rp).toHaveBeenCalledTimes(3);
   });
@@ -106,7 +106,7 @@ describe("registerSchema", () => {
 
     expect.assertions(2);
 
-    await expect(registerSchema(opts)).rejects.toMatchSnapshot();
+    await expect(retrieveSchema(opts, SCHEMA_ID)).rejects.toMatchSnapshot();
 
     expect(rp).toHaveBeenCalledTimes(5);
   });
@@ -129,7 +129,7 @@ describe("registerSchema", () => {
 
     expect.assertions(2);
 
-    await expect(registerSchema(opts)).rejects.toMatchSnapshot();
+    await expect(retrieveSchema(opts, SCHEMA_ID)).rejects.toMatchSnapshot();
 
     expect(rp).toHaveBeenCalledTimes(6);
   });
