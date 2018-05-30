@@ -57,27 +57,23 @@ exports.registerSchema = (opts) => __awaiter(this, void 0, void 0, function* () 
  * Create a function that takes a message JSON object
  * and Avro encodes it
  *
- * @param message - the JSON object to Avro encode
+ * @param payload - the JSON object to Avro encode
  * @return - The Avro encoded object as a Buffer
  */
-exports.genMessageEncoder = (schema, schemaId) => (message) => {
-    if (message === null) {
+exports.genMessageEncoder = (schema, schemaId) => (payload) => {
+    if (payload === null) {
         // no payload so return it
         return null;
     }
-    let length = 1024;
-    for (;;) {
-        const buf = new Buffer(length);
-        buf[0] = 0; // magic byte
-        buf.writeInt32BE(schemaId, 1);
-        const pos = schema.encode(message, buf, 5);
-        if (pos < 0) {
-            // the buffer was too short, we need to resize
-            length -= pos;
-            continue;
-        }
-        return buf.slice(0, pos);
-    }
+    // create the avro header
+    const header = new Buffer(5);
+    // magic byte
+    header.writeInt8(0, 0);
+    // schema id
+    header.writeInt32BE(schemaId, 1);
+    // Avro encode the payload
+    const buffer = schema.toBuffer(payload);
+    return Buffer.concat([header, buffer]);
 };
 /*****************************************************************/
 /**                      EXPORTED INTERFACE                     **/

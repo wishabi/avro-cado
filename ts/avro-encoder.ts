@@ -56,34 +56,31 @@ export const registerSchema = async (opts: Options): Promise<number> => {
  * Create a function that takes a message JSON object
  * and Avro encodes it
  *
- * @param message - the JSON object to Avro encode
+ * @param payload - the JSON object to Avro encode
  * @return - The Avro encoded object as a Buffer
  */
 export const genMessageEncoder = (
   schema: Avro.Type,
   schemaId: number
-): EncodeFunc => (message: object): Buffer => {
-  if (message === null) {
+): EncodeFunc => (payload: object): Buffer => {
+  if (payload === null) {
     // no payload so return it
     return null;
   }
 
-  let length: number = 1024;
+  // create the avro header
+  const header = new Buffer(5);
 
-  for (;;) {
-    const buf: Buffer = new Buffer(length);
-    buf[0] = 0; // magic byte
-    buf.writeInt32BE(schemaId, 1);
+  // magic byte
+  header.writeInt8(0, 0);
 
-    const pos: number = schema.encode(message, buf, 5);
-    if (pos < 0) {
-      // the buffer was too short, we need to resize
-      length -= pos;
-      continue;
-    }
+  // schema id
+  header.writeInt32BE(schemaId, 1);
 
-    return buf.slice(0, pos);
-  }
+  // Avro encode the payload
+  const buffer: Buffer = schema.toBuffer(payload);
+
+  return Buffer.concat([header, buffer]);
 };
 
 /*****************************************************************/

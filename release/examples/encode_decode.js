@@ -41,7 +41,7 @@ const encodeDecode = () => __awaiter(this, void 0, void 0, function* () {
     };
     /*
      *****************************************************************
-     *                                                  encoder exmple
+     *                                                 encoder example
      *****************************************************************
      */
     console.log(`Before encoder:               ${JSON.stringify(message)}`);
@@ -52,7 +52,7 @@ const encodeDecode = () => __awaiter(this, void 0, void 0, function* () {
     console.log(`After encoder before decoder: ${encoded.toString("hex")}`);
     /*
      *****************************************************************
-     *                                                  decoder exmple
+     *                                                 decoder example
      *****************************************************************
      */
     // create a decoder

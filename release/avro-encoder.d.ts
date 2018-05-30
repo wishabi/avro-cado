@@ -20,7 +20,7 @@ export declare const registerSchema: (opts: Options) => Promise<number>;
  * Create a function that takes a message JSON object
  * and Avro encodes it
  *
- * @param message - the JSON object to Avro encode
+ * @param payload - the JSON object to Avro encode
  * @return - The Avro encoded object as a Buffer
  */
 export declare const genMessageEncoder: (schema: any, schemaId: number) => EncodeFunc;

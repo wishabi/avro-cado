@@ -12,6 +12,12 @@ const optionsDefault: Options = {
   schema: null
 };
 
+/**
+ * Validate the options and merge them with the default values
+ *
+ * @param opts - the user specified options
+ * @return - merged configuration options
+ */
 export const processOptions = (opts: Options): Options => {
   if (!opts.subject) {
     throw new Error("subject key missing");
