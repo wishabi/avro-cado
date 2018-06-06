@@ -1,5 +1,5 @@
-import { createEncoder } from "../avro-encoder";
 import { createDecoder } from "../avro-decoder";
+import { createEncoder } from "../avro-encoder";
 
 const avroSchema = {
   type: "record",

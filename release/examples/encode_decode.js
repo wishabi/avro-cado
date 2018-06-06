@@ -8,8 +8,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const avro_encoder_1 = require("../avro-encoder");
 const avro_decoder_1 = require("../avro-decoder");
+const avro_encoder_1 = require("../avro-encoder");
 const avroSchema = {
     type: "record",
     name: "TestMessage",
