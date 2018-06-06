@@ -1,8 +1,8 @@
-import * as rp from "request-promise";
 import * as Avro from "avsc";
-import { handleError } from "./util";
-import { processOptions, ACCEPT_HEADERS } from "./config";
+import * as rp from "request-promise";
+import { ACCEPT_HEADERS, processOptions } from "./config";
 import { EncodeFunc, Options } from "./types/types";
+import { handleError } from "./util";
 
 /**
  * Register the specified schema for the specified topic under the
@@ -90,9 +90,11 @@ export const genMessageEncoder = (
   return Buffer.concat([header, buffer]);
 };
 
-/*****************************************************************/
-/**                      EXPORTED INTERFACE                     **/
-/*****************************************************************/
+/*
+ *****************************************************************
+ *                      EXPORTED INTERFACE                       *
+ *****************************************************************
+ */
 
 export const createEncoder = async (opts: Options): Promise<EncodeFunc> => {
   // Aggregate the configuration values with defaults

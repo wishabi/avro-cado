@@ -1,8 +1,13 @@
 import * as Avro from "avsc";
 import * as rp from "request-promise";
-import { processOptions, ACCEPT_HEADERS } from "./config";
-import { handleError, aggregateOptions } from "./util";
-import { DecoderInfo, DecodeFunc, Options } from "./types/types";
+import { ACCEPT_HEADERS, processOptions } from "./config";
+import {
+  DecodeFunc,
+  DecoderInfo,
+  Options,
+  SchemaResolverFunc
+} from "./types/types";
+import { aggregateOptions, handleError } from "./util";
 
 /**
  * Retrieve the Avro schema from the schema registry. On an error
@@ -59,7 +64,9 @@ export const retrieveSchema = async (
  *           encoded with the specified Avro schema to the local
  *           Avro schema format
  */
-export const genCreateSchemaResolver = (opts: Options) => async (
+export const genCreateSchemaResolver = (
+  opts: Options
+): SchemaResolverFunc => async (
   id: number,
   schema: Avro.Type
 ): Promise<Avro.Resolver> => {
@@ -106,7 +113,7 @@ export const genPayloadDecoder = ({
   resolversMap
 }: DecoderInfo): DecodeFunc => async (
   buffer: Buffer | null
-): Promise<Object> => {
+): Promise<object> => {
   // Do not attempt to avro decode null value
   if (!buffer) {
     return buffer;
@@ -135,9 +142,11 @@ export const genPayloadDecoder = ({
   return schema.decode(buffer.slice(5), 0, await resolversMap[id]).value;
 };
 
-/*****************************************************************/
-/**                      EXPORTED INTERFACE                     **/
-/*****************************************************************/
+/*
+ *****************************************************************
+ *                      EXPORTED INTERFACE                       *
+ *****************************************************************
+ */
 
 export const createDecoder = (opts: Options): DecodeFunc => {
   // Aggregate the configuration values with defaults

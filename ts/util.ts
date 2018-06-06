@@ -38,14 +38,14 @@ export const aggregateOptions = (
   defaultConf: Options,
   overrideConf: Options
 ): Options => {
-  const aggOptions = Object.assign({}, defaultConf, overrideConf);
+  const aggOptions: Options = { ...defaultConf, ...overrideConf };
 
   if (!overrideConf) {
     return aggOptions;
   }
 
   // determine how to handle unions
-  const validWrapOptions: Array<string> = ["always", "never", "auto"];
+  const validWrapOptions: string[] = ["always", "never", "auto"];
   if (
     validWrapOptions.filter(opt => opt === aggOptions.wrapUnions).length === 0
   ) {

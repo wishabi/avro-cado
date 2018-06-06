@@ -8,6 +8,7 @@
   "scripts": {
     "test": "jest",
     "package": "(REL_DIR='./release/'; git checkout HEAD -- ${REL_DIR} && git rm -rf ${REL_DIR} && tsc && git add ${REL_DIR})",
+    "lint": "mkdir -p reports && tslint --force --out reports/tslint-report.txt --format prose 'src/**/*.ts'",
     "build": "(REL_DIR='./release/'; tsc)"
   },
   "devDependencies": {
@@ -16,6 +17,8 @@
     "jest": "^22.1.4",
     "jest-cli": "^22.1.4",
     "ts-jest": "^22.0.2",
+    "tslint": "^5.10.0",
+    "tslint-config-prettier": "^1.13.0",
     "typescript": "2.7.1"
   },
   "dependencies": {
