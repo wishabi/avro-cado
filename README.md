@@ -6,25 +6,16 @@
 
 ## Features
 
-* Typescript package that implements Avro encoding and decoding
-* Use an instance of `Schema Registry` to look up schemas when decoding and register schemas when encoding
-* Easy to use interface. All of the `Schema Registry` flows are implemented in the package
-* Perform Avro schema resolution from the Avro schema a payload is encoded with to the Avro schema the application knows how to handle
+- Typescript package that implements Avro encoding and decoding
+- Use an instance of `Schema Registry` to look up schemas when decoding and register schemas when encoding
+- Easy to use interface. All of the `Schema Registry` flows are implemented in the package
+- Perform Avro schema resolution from the Avro schema a payload is encoded with to the Avro schema the application knows how to handle
 
 ## Installation
 
 ```
 npm install [package-name]
 ```
-
-## Making Changes
-
-* Make sure you have typescript installed: `npm install -g typescript`
-* Run `npm install` to install all dependencies
-* Make changes
-* Run `npm run package`. This will remove the `release` directory, run `tsc` and add the release directory back to git. **The release directory needs to be updated every commit to include changes in the library**.
-* Update the `version` in `package.json`
-* Add your changes to git, and commit.
 
 ## Examples
 
@@ -81,3 +72,12 @@ const decodeFunc = createDecoder(opts);
 // decode a message
 const decoded = await decodeFunc(encoded);
 ```
+
+## Making Changes
+
+- Make sure you have typescript installed: `npm install -g typescript`
+- Run `npm install` to install all dependencies
+- Make changes
+- Run `npm run package`. This will remove the `release` directory, run `tsc` and add the release directory back to git. **The release directory needs to be updated every commit to include changes in the library**.
+- Update the `version` in `package.json`
+- Add your changes to git, and commit.
