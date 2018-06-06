@@ -1,0 +1,62 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`aggregateOptions should merge the two objects correctly 1`] = `
+Object {
+  "numRetries": 3,
+  "schemaRegistry": "schemaRegistry_default1",
+  "wrapUnions": "auto",
+}
+`;
+
+exports[`aggregateOptions should merge the two objects correctly 2`] = `
+Object {
+  "numRetries": 3,
+  "schemaRegistry": "schemaRegistry_override2",
+  "wrapUnions": "auto",
+}
+`;
+
+exports[`aggregateOptions should merge the two objects correctly 3`] = `
+Object {
+  "numRetries": 4,
+  "schemaRegistry": "schemaRegistry_override3",
+  "wrapUnions": "always",
+}
+`;
+
+exports[`aggregateOptions should merge the two objects correctly 4`] = `
+Object {
+  "numRetries": 3,
+  "schemaRegistry": "schemaRegistry_default4",
+  "topic": "topic_override",
+  "wrapUnions": "auto",
+}
+`;
+
+exports[`aggregateOptions should merge the two objects correctly 5`] = `
+Object {
+  "numRetries": 3,
+  "schemaRegistry": "schemaRegistry_default5",
+  "wrapUnions": "auto",
+}
+`;
+
+exports[`aggregateOptions should merge the two objects correctly 6`] = `
+Object {
+  "numRetries": 3,
+  "schemaRegistry": "schemaRegistry_default6",
+  "wrapUnions": "auto",
+}
+`;
+
+exports[`handleError should return 'false' for an error NOT eligible for retry 1`] = `false`;
+
+exports[`handleError should return 'false' for an error NOT eligible for retry 2`] = `false`;
+
+exports[`handleError should return 'false' for an error NOT eligible for retry 3`] = `false`;
+
+exports[`handleError should return 'false' for an error NOT eligible for retry 4`] = `false`;
+
+exports[`handleError should return 'true' for an error eligible for retry 1`] = `true`;
+
+exports[`handleError should return 'true' for an error eligible for retry 2`] = `true`;

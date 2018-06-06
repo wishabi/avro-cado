@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`genPayloadDecoder should decode a non null message successfully with empty resolvers map 1`] = `
+TestMessage {
+  "key": "1",
+  "text": "A simple test message 1",
+}
+`;
+
+exports[`genPayloadDecoder should decode a non null message successfully with non empty resolvers map 1`] = `
+TestMessage {
+  "key": "1",
+  "text": "A simple test message 1",
+}
+`;
+
+exports[`genPayloadDecoder should decode a null message successfully 1`] = `null`;
