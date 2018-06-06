@@ -1,4 +1,4 @@
-import { DecoderInfo, DecodeFunc, Options } from "./types/types";
+import { DecodeFunc, DecoderInfo, Options, SchemaResolverFunc } from "./types/types";
 /**
  * Retrieve the Avro schema from the schema registry. On an error
  * eligible for retry, try up to the configure number of times
@@ -21,7 +21,7 @@ export declare const retrieveSchema: ({ subject, schemaRegistry, numRetries }: O
  *           encoded with the specified Avro schema to the local
  *           Avro schema format
  */
-export declare const genCreateSchemaResolver: (opts: Options) => (id: number, schema: any) => Promise<any>;
+export declare const genCreateSchemaResolver: (opts: Options) => SchemaResolverFunc;
 /**
  * Create an Avro decoder based on the specified parameters and
  * return a closure that takes an encoded Buffer and decodes it
@@ -36,7 +36,4 @@ export declare const genCreateSchemaResolver: (opts: Options) => (id: number, sc
  * @return - The Avro decoded object that conforms to the specified schema
  */
 export declare const genPayloadDecoder: ({ schema, createSchemaResolver, resolversMap }: DecoderInfo) => DecodeFunc;
-/*****************************************************************/
-/**                      EXPORTED INTERFACE                     **/
-/*****************************************************************/
 export declare const createDecoder: (opts: Options) => DecodeFunc;

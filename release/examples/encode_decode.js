@@ -57,6 +57,7 @@ const encodeDecode = () => __awaiter(this, void 0, void 0, function* () {
      */
     // create a decoder
     const decodeFunc = avro_decoder_1.createDecoder(opts);
+    // decode a message
     const decoded = yield decodeFunc(encoded);
     console.log(`After decoder:                ${JSON.stringify(decoded)}`);
 });

@@ -113,9 +113,11 @@ exports.genPayloadDecoder = ({ schema, createSchemaResolver, resolversMap }) => 
     }
     return schema.decode(buffer.slice(5), 0, yield resolversMap[id]).value;
 });
-/*****************************************************************/
-/**                      EXPORTED INTERFACE                     **/
-/*****************************************************************/
+/*
+ *****************************************************************
+ *                      EXPORTED INTERFACE                       *
+ *****************************************************************
+ */
 exports.createDecoder = (opts) => {
     // Aggregate the configuration values with defaults
     const mergedOpts = config_1.processOptions(opts);

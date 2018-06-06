@@ -7,18 +7,15 @@ export interface Options {
     subject: string;
     wrapUnions?: string;
 }
-export interface EncodeFunc {
-    (message: object): Buffer;
+export declare type EncodeFunc = (message: object) => Buffer;
+export interface ResolverMap {
+    [index: string]: Promise<Avro.Resolver>;
 }
-export declare type ResolverMap = {
-    [index: number]: Promise<Avro.Resolver>;
-};
+export declare type SchemaResolverFunc = (id: number, schema: Avro.Type) => Promise<Avro.Resolver>;
 export interface DecoderInfo {
     subject: string;
     schema: Avro.Type;
     resolversMap: ResolverMap;
-    createSchemaResolver: Function;
+    createSchemaResolver: SchemaResolverFunc;
 }
-export interface DecodeFunc {
-    (buffer: Buffer): Promise<Object>;
-}
+export declare type DecodeFunc = (buffer: Buffer) => Promise<object>;

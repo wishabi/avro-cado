@@ -24,7 +24,4 @@ export declare const registerSchema: ({ subject, schemaRegistry, schema, numRetr
  * @return - The Avro encoded object as a Buffer
  */
 export declare const genMessageEncoder: (schema: any, schemaId: number) => EncodeFunc;
-/*****************************************************************/
-/**                      EXPORTED INTERFACE                     **/
-/*****************************************************************/
 export declare const createEncoder: (opts: Options) => Promise<EncodeFunc>;

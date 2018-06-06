@@ -8,10 +8,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const rp = require("request-promise");
 const Avro = require("avsc");
-const util_1 = require("./util");
+const rp = require("request-promise");
 const config_1 = require("./config");
+const util_1 = require("./util");
 /**
  * Register the specified schema for the specified topic under the
  * specified subject.
@@ -78,9 +78,11 @@ exports.genMessageEncoder = (schema, schemaId) => (payload) => {
     const buffer = schema.toBuffer(payload);
     return Buffer.concat([header, buffer]);
 };
-/*****************************************************************/
-/**                      EXPORTED INTERFACE                     **/
-/*****************************************************************/
+/*
+ *****************************************************************
+ *                      EXPORTED INTERFACE                       *
+ *****************************************************************
+ */
 exports.createEncoder = (opts) => __awaiter(this, void 0, void 0, function* () {
     // Aggregate the configuration values with defaults
     const mergedOpts = config_1.processOptions(opts);
