@@ -7,9 +7,9 @@
 ## Features
 
 - Typescript package that implements Avro encoding and decoding
-- Use an instance of `Schema Registry` to look up schemas when decoding and register schemas when encoding
+- Follows the Avro serialization conventions of Confluent's `Schema Registry`. During deserialization, schemas are obtained from the registry using their 4-byte id prefix. When serializing data, schemas are registered to the registry and obtain the corresponding 4-byte id prefix. 
 - Easy to use interface. All of the `Schema Registry` flows are implemented in the package
-- Perform Avro schema resolution from the Avro schema a payload is encoded with to the Avro schema the application knows how to handle
+- Supports evolution. Converts Avro-encoded payloads into a format specified by the application's Avro schema.
 
 ## Installation
 
@@ -75,9 +75,11 @@ const decoded = await decodeFunc(encoded);
 
 ## Making Changes
 
-- Make sure you have typescript installed: `npm install -g typescript`
-- Run `npm install` to install all dependencies
+- Ensure typescript is installed: `npm install -g typescript`
+- Install all dependencies: `npm install`
 - Make changes
 - Run `npm run package`. This will remove the `release` directory, run `tsc` and add the release directory back to git. **The release directory needs to be updated every commit to include changes in the library**.
 - Update the `version` in `package.json`
 - Add your changes to git, and commit.
+
+
