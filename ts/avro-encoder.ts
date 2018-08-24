@@ -1,8 +1,8 @@
-import * as rp from "request-promise";
-import * as Avro from "avsc";
-import { handleError } from "./util";
-import { processOptions, ACCEPT_HEADERS } from "./config";
-import { EncodeFunc, Options } from "./types/types";
+import axios, { AxiosResponse } from 'axios';
+import * as Avro from 'avsc';
+import { handleError } from './util';
+import { processOptions, ACCEPT_HEADERS } from './config';
+import { EncodeFunc, Options } from './types/types';
 
 /**
  * Register the specified schema for the specified topic under the
@@ -28,14 +28,13 @@ export const registerSchema = async ({
 }: Options): Promise<number> => {
   // craft the REST call to the schema registry
   const req = {
-    method: "POST",
-    uri: `${schemaRegistry}/subjects/${subject}/versions`,
+    method: 'POST',
+    url: `${schemaRegistry}/subjects/${subject}/versions`,
     headers: { Accept: ACCEPT_HEADERS },
-    body: {
+    data: {
       schema: JSON.stringify(schema)
     },
-    json: true,
-    resolveWithFullResponse: true
+    json: true
   };
 
   let error = null;
@@ -43,7 +42,7 @@ export const registerSchema = async ({
   // implement retry on certain status/reason codes
   for (let i = 0; i <= numRetries; i += 1) {
     try {
-      return (await rp(req)).body.id;
+      return ((await axios(req)) as AxiosResponse).data.id;
     } catch (err) {
       // save the error
       error = err;

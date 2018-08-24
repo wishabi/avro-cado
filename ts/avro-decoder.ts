@@ -1,7 +1,7 @@
 import * as Avro from "avsc";
-import * as rp from "request-promise";
+import axios, { AxiosResponse } from "axios";
 import { processOptions, ACCEPT_HEADERS } from "./config";
-import { handleError, aggregateOptions } from "./util";
+import { handleError } from "./util";
 import { DecoderInfo, DecodeFunc, Options } from "./types/types";
 
 /**
@@ -19,10 +19,10 @@ export const retrieveSchema = async (
   id: number
 ) => {
   const req = {
-    uri: `${schemaRegistry}/schemas/ids/${id}`,
+    method: "get",
+    url: `${schemaRegistry}/schemas/ids/${id}`,
     headers: { Accept: ACCEPT_HEADERS },
-    json: true,
-    resolveWithFullResponse: true
+    json: true
   };
 
   let error = null;
@@ -30,7 +30,8 @@ export const retrieveSchema = async (
   // implement retry on certain status/reason codes
   for (let i = 0; i <= numRetries; i += 1) {
     try {
-      return JSON.parse((await rp(req)).body.schema);
+      const results: AxiosResponse = await axios(req);
+      return JSON.parse(results.data.schema);
     } catch (err) {
       // save the error
       error = err;
