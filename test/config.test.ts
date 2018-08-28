@@ -12,15 +12,15 @@ const ERROR_OPTIONS = [
     schemaRegistry: "http://localhost:8081",
     numRetries: 10,
     wrapUnions: "auto",
-    subject: "subject"
+    subject: "subject",
   },
   // subject key missing
   {
     schemaRegistry: "http://localhost:8081",
     numRetries: 10,
     wrapUnions: "auto",
-    schema: {}
-  }
+    schema: {},
+  },
 ];
 
 const OPTIONS = [
@@ -29,15 +29,15 @@ const OPTIONS = [
     numRetries: 100,
     wrapUnions: "never",
     subject: "subject",
-    schema: {}
-  }
+    schema: {},
+  },
 ];
 
 describe("processOptions", () => {
   it("should throw error on invalid options", () => {
     expect.assertions(ERROR_OPTIONS.length);
 
-    ERROR_OPTIONS.forEach(err_opts => {
+    ERROR_OPTIONS.forEach((err_opts) => {
       const throwsError = () => {
         processOptions(err_opts);
       };
@@ -48,7 +48,7 @@ describe("processOptions", () => {
   it("should process the options correctly", () => {
     expect.assertions(OPTIONS.length);
 
-    OPTIONS.forEach(opts => {
+    OPTIONS.forEach((opts) => {
       expect(processOptions(opts)).toMatchSnapshot();
     });
   });

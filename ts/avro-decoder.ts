@@ -1,8 +1,8 @@
 import * as Avro from "avsc";
 import axios, { AxiosResponse } from "axios";
-import { processOptions, ACCEPT_HEADERS } from "./config";
+import { ACCEPT_HEADERS, processOptions } from "./config";
+import { DecodeFunc, DecoderInfo, Options } from "./types/types";
 import { handleError } from "./util";
-import { DecoderInfo, DecodeFunc, Options } from "./types/types";
 
 /**
  * Retrieve the Avro schema from the schema registry. On an error
@@ -16,13 +16,13 @@ import { DecoderInfo, DecodeFunc, Options } from "./types/types";
  */
 export const retrieveSchema = async (
   { subject, schemaRegistry, numRetries }: Options,
-  id: number
+  id: number,
 ) => {
   const req = {
     method: "get",
     url: `${schemaRegistry}/schemas/ids/${id}`,
     headers: { Accept: ACCEPT_HEADERS },
-    json: true
+    json: true,
   };
 
   let error = null;
@@ -45,7 +45,7 @@ export const retrieveSchema = async (
   throw new Error(
     `Failed to retrieve schema for subject ${subject} with id ${id} :: ${
       error.message
-    }`
+    }`,
   );
 };
 
@@ -62,7 +62,7 @@ export const retrieveSchema = async (
  */
 export const genCreateSchemaResolver = (opts: Options) => async (
   id: number,
-  schema: Avro.Type
+  schema: Avro.Type,
 ): Promise<Avro.Resolver> => {
   /**
    * Retrieve the schema by ID from the schema registry ...
@@ -83,7 +83,7 @@ export const genCreateSchemaResolver = (opts: Options) => async (
     throw new Error(
       `Local schema is not compatible with schema from registry with id ${id} :: ${
         err.message
-      }`
+      }`,
     );
   }
 };
@@ -104,9 +104,9 @@ export const genCreateSchemaResolver = (opts: Options) => async (
 export const genPayloadDecoder = ({
   schema,
   createSchemaResolver,
-  resolversMap
+  resolversMap,
 }: DecoderInfo): DecodeFunc => async (
-  buffer: Buffer | null
+  buffer: Buffer | null,
 ): Promise<Object> => {
   // Do not attempt to avro decode null value
   if (!buffer) {
@@ -149,7 +149,7 @@ export const createDecoder = (opts: Options): DecodeFunc => {
     subject: mergedOpts.subject,
     schema: Avro.Type.forSchema(mergedOpts.schema),
     resolversMap: {},
-    createSchemaResolver: null
+    createSchemaResolver: null,
   };
 
   decoderInfo.createSchemaResolver = genCreateSchemaResolver(mergedOpts);

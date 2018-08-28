@@ -1,8 +1,8 @@
-import axios, { AxiosResponse } from 'axios';
-import * as Avro from 'avsc';
-import { handleError } from './util';
-import { processOptions, ACCEPT_HEADERS } from './config';
-import { EncodeFunc, Options } from './types/types';
+import * as Avro from "avsc";
+import axios, { AxiosResponse } from "axios";
+import { ACCEPT_HEADERS, processOptions } from "./config";
+import { EncodeFunc, Options } from "./types/types";
+import { handleError } from "./util";
 
 /**
  * Register the specified schema for the specified topic under the
@@ -24,17 +24,17 @@ export const registerSchema = async ({
   subject,
   schemaRegistry,
   schema,
-  numRetries
+  numRetries,
 }: Options): Promise<number> => {
   // craft the REST call to the schema registry
   const req = {
-    method: 'POST',
+    method: "POST",
     url: `${schemaRegistry}/subjects/${subject}/versions`,
     headers: { Accept: ACCEPT_HEADERS },
     data: {
-      schema: JSON.stringify(schema)
+      schema: JSON.stringify(schema),
     },
-    json: true
+    json: true,
   };
 
   let error = null;
@@ -54,7 +54,7 @@ export const registerSchema = async ({
   }
 
   throw new Error(
-    `Failed to register schema for subject ${subject} :: ${error.message}`
+    `Failed to register schema for subject ${subject} :: ${error.message}`,
   );
 };
 
@@ -67,7 +67,7 @@ export const registerSchema = async ({
  */
 export const genMessageEncoder = (
   schema: Avro.Type,
-  schemaId: number
+  schemaId: number,
 ): EncodeFunc => (payload: object): Buffer => {
   if (payload === null) {
     // no payload so return it
@@ -99,8 +99,8 @@ export const createEncoder = async (opts: Options): Promise<EncodeFunc> => {
 
   return genMessageEncoder(
     Avro.Type.forSchema(mergedOpts.schema, {
-      wrapUnions: mergedOpts.wrapUnions
+      wrapUnions: mergedOpts.wrapUnions,
     }),
-    await registerSchema(mergedOpts)
+    await registerSchema(mergedOpts),
   );
 };

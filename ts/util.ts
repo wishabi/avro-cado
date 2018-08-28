@@ -1,5 +1,5 @@
-import { Options } from './types/types';
-import { AxiosError } from 'axios';
+import { AxiosError } from "axios";
+import { Options } from "./types/types";
 
 export const RETRY_STATUS_CODE_500 = 500;
 export const RETRY_ERROR_CODE_50002 = 50002;
@@ -37,7 +37,7 @@ export const handleError = (err: AxiosError): boolean => {
  */
 export const aggregateOptions = (
   defaultConf: Options,
-  overrideConf: Options
+  overrideConf: Options,
 ): Options => {
   const aggOptions = Object.assign({}, defaultConf, overrideConf);
 
@@ -46,9 +46,9 @@ export const aggregateOptions = (
   }
 
   // determine how to handle unions
-  const validWrapOptions: Array<string> = ['always', 'never', 'auto'];
+  const validWrapOptions: string[] = ["always", "never", "auto"];
   if (
-    validWrapOptions.filter(opt => opt === aggOptions.wrapUnions).length === 0
+    validWrapOptions.filter((opt) => opt === aggOptions.wrapUnions).length === 0
   ) {
     aggOptions.wrapUnions = defaultConf.wrapUnions;
   }

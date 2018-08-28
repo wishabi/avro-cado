@@ -9,7 +9,7 @@ const optionsDefault: Options = {
   numRetries: 10,
   wrapUnions: "auto",
   subject: null,
-  schema: null
+  schema: null,
 };
 
 /**

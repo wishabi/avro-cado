@@ -11,14 +11,14 @@ const AVRO_SCHEMA = {
     {
       name: "key",
       type: "string",
-      doc: "The the key for the message"
+      doc: "The the key for the message",
     },
     {
       name: "text",
       type: "string",
-      doc: "The text for the message"
-    }
-  ]
+      doc: "The text for the message",
+    },
+  ],
 };
 
 const AVRO_SCHEMA_OBJ = Avro.Type.forSchema(AVRO_SCHEMA);
@@ -26,7 +26,7 @@ const SCHEMA_ID = 1;
 
 const createSchemaResolver = async (
   id: number,
-  schema: Avro.Type
+  schema: Avro.Type,
 ): Promise<object> => {
   return AVRO_SCHEMA_OBJ.createResolver(AVRO_SCHEMA_OBJ);
 };
@@ -35,12 +35,12 @@ const decoderInfo: DecoderInfo = {
   subject: "subject",
   schema: AVRO_SCHEMA_OBJ,
   resolversMap: {},
-  createSchemaResolver: createSchemaResolver
+  createSchemaResolver,
 };
 
 const encoded: Buffer = Buffer.from(
   "000000000102312e412073696d706c652074657374206d6573736167652031",
-  "hex"
+  "hex",
 );
 
 describe("genPayloadDecoder", () => {
@@ -59,7 +59,7 @@ describe("genPayloadDecoder", () => {
       subject: "subject",
       schema: AVRO_SCHEMA_OBJ,
       resolversMap: {},
-      createSchemaResolver: createSchemaResolver
+      createSchemaResolver,
     };
 
     decoderInfo[SCHEMA_ID] = AVRO_SCHEMA_OBJ.createResolver(AVRO_SCHEMA_OBJ);
