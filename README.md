@@ -6,10 +6,15 @@
 
 ## Features
 
-- Typescript package that implements Avro encoding and decoding
+- Simple package that implements Avro encoding and decoding
+- Written in Typescript
 - Follows the Avro serialization conventions of [Confluent's Schema Registry](https://github.com/confluentinc/schema-registry). During deserialization, schemas are obtained from the registry using their 4-byte id prefix. When serializing data, schemas are registered to the registry and obtain the corresponding 4-byte id prefix.
 - Easy to use interface. All of [Confluent's Schema Registry](https://github.com/confluentinc/schema-registry) flows are implemented in the package
 - Supports evolution. Converts Avro-encoded payloads into a format specified by the application's Avro schema.
+
+## Sample use case
+
+- We use this when consuming and producing Kakfa messages
 
 ## Installation
 
