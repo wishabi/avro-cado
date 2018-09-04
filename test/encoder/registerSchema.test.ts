@@ -8,14 +8,14 @@ import {
   handleError,
   RETRY_ERROR_CODE_50002,
   RETRY_ERROR_CODE_50003,
-  RETRY_STATUS_CODE_500,
+  RETRY_STATUS_CODE_500
 } from "../../ts/util";
 
 const opts: Options = {
   subject: "subject",
   schemaRegistry: "host",
   numRetries: 1,
-  schema: { data: "schema" },
+  schema: { data: "schema" }
 };
 
 describe("registerSchema", () => {
@@ -27,8 +27,8 @@ describe("registerSchema", () => {
     axios.mockImplementationOnce((params) => {
       return {
         data: {
-          id: 1,
-        },
+          id: 1
+        }
       };
     });
 
@@ -44,7 +44,7 @@ describe("registerSchema", () => {
       headers: { Accept: ACCEPT_HEADERS },
       json: true,
       method: "POST",
-      url: `${opts.schemaRegistry}/subjects/${opts.subject}/versions`,
+      url: `${opts.schemaRegistry}/subjects/${opts.subject}/versions`
     });
   });
 
@@ -60,10 +60,10 @@ describe("registerSchema", () => {
             status: RETRY_STATUS_CODE_500,
             data: {
               error_code: RETRY_ERROR_CODE_50002,
-              message: "500:50002",
-            },
+              message: "500:50002"
+            }
           },
-          message: "500:50002",
+          message: "500:50002"
         };
       })
       .mockImplementationOnce(() => {
@@ -72,10 +72,10 @@ describe("registerSchema", () => {
             status: RETRY_STATUS_CODE_500,
             data: {
               error_code: RETRY_ERROR_CODE_50002,
-              message: "500:50002",
-            },
+              message: "500:50002"
+            }
           },
-          message: "500:50002",
+          message: "500:50002"
         };
       });
 
@@ -94,10 +94,10 @@ describe("registerSchema", () => {
             status: RETRY_STATUS_CODE_500,
             data: {
               error_code: RETRY_ERROR_CODE_50003,
-              message: "500:50003",
-            },
+              message: "500:50003"
+            }
           },
-          message: "500:50003",
+          message: "500:50003"
         };
       })
       .mockImplementationOnce((params) => {
@@ -106,10 +106,10 @@ describe("registerSchema", () => {
             status: RETRY_STATUS_CODE_500,
             data: {
               error_code: RETRY_ERROR_CODE_50003,
-              message: "500:50003",
-            },
+              message: "500:50003"
+            }
           },
-          message: "500:50003",
+          message: "500:50003"
         };
       });
 
@@ -131,10 +131,10 @@ describe("registerSchema", () => {
           status: 600,
           data: {
             error_code: 60002,
-            message: "600:50002",
-          },
+            message: "600:50002"
+          }
         },
-        message: "600:50002",
+        message: "600:50002"
       };
     });
 

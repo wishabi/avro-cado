@@ -29,6 +29,7 @@
   "jest": {
     "collectCoverage": true,
     "collectCoverageFrom": [
+      "!ts/examples/**",
       "ts/**/*.{ts}"
     ],
     "transform": {

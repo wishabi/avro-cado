@@ -10,14 +10,14 @@ const AVRO_SCHEMA = {
     {
       name: "key",
       type: "string",
-      doc: "The the key for the message",
+      doc: "The the key for the message"
     },
     {
       name: "text",
       type: "string",
-      doc: "The text for the message",
-    },
-  ],
+      doc: "The text for the message"
+    }
+  ]
 };
 
 const AVRO_SCHEMA_OBJ = Avro.Type.forSchema(AVRO_SCHEMA);
@@ -27,18 +27,18 @@ const AVRO_SCHEMA_ID: number = 1;
 const VALID_MESSAGES = [
   {
     key: "1",
-    text: "A simple test message 1",
+    text: "A simple test message 1"
   },
   {
     key: "1",
     text:
-      "A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1",
-  },
+      "A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1A simple test message 1"
+  }
 ];
 
 const TEST_MESSAGE_INVALID = {
   noKey: `1`,
-  text: `A simple test message 1`,
+  text: `A simple test message 1`
 };
 
 describe("genMessageEncoder", () => {

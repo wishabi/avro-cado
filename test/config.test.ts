@@ -12,15 +12,15 @@ const ERROR_OPTIONS = [
     schemaRegistry: "http://localhost:8081",
     numRetries: 10,
     wrapUnions: "auto",
-    subject: "subject",
+    subject: "subject"
   },
   // subject key missing
   {
     schemaRegistry: "http://localhost:8081",
     numRetries: 10,
     wrapUnions: "auto",
-    schema: {},
-  },
+    schema: {}
+  }
 ];
 
 const OPTIONS = [
@@ -29,8 +29,8 @@ const OPTIONS = [
     numRetries: 100,
     wrapUnions: "never",
     subject: "subject",
-    schema: {},
-  },
+    schema: {}
+  }
 ];
 
 describe("processOptions", () => {

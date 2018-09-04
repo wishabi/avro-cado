@@ -7,14 +7,14 @@ import { Options } from "../../ts/types/types";
 import {
   RETRY_ERROR_CODE_50002,
   RETRY_ERROR_CODE_50003,
-  RETRY_STATUS_CODE_500,
+  RETRY_STATUS_CODE_500
 } from "../../ts/util";
 
 const opts: Options = {
   subject: "subject",
   schemaRegistry: "host",
   numRetries: 1,
-  schema: { data: "schema" },
+  schema: { data: "schema" }
 };
 
 const SCHEMA_ID = 1;
@@ -28,8 +28,8 @@ describe("genSchemaRetriever", () => {
     axios.mockImplementationOnce((params) => {
       return {
         data: {
-          schema: JSON.stringify(opts.schema),
-        },
+          schema: JSON.stringify(opts.schema)
+        }
       };
     });
 
@@ -44,7 +44,7 @@ describe("genSchemaRetriever", () => {
       headers: { Accept: ACCEPT_HEADERS },
       json: true,
       method: "get",
-      url: `${opts.schemaRegistry}/schemas/ids/${SCHEMA_ID}`,
+      url: `${opts.schemaRegistry}/schemas/ids/${SCHEMA_ID}`
     });
   });
 
@@ -60,10 +60,10 @@ describe("genSchemaRetriever", () => {
             status: RETRY_STATUS_CODE_500,
             data: {
               error_code: RETRY_ERROR_CODE_50002,
-              message: "500:50002",
-            },
+              message: "500:50002"
+            }
           },
-          message: "500:50002",
+          message: "500:50002"
         };
       })
       .mockImplementationOnce(() => {
@@ -72,10 +72,10 @@ describe("genSchemaRetriever", () => {
             status: RETRY_STATUS_CODE_500,
             data: {
               error_code: RETRY_ERROR_CODE_50002,
-              message: "500:50002",
-            },
+              message: "500:50002"
+            }
           },
-          message: "500:50002",
+          message: "500:50002"
         };
       });
 
@@ -94,10 +94,10 @@ describe("genSchemaRetriever", () => {
             status: RETRY_STATUS_CODE_500,
             data: {
               error_code: RETRY_ERROR_CODE_50003,
-              message: "500:50003",
-            },
+              message: "500:50003"
+            }
           },
-          message: "500:50003",
+          message: "500:50003"
         };
       })
       .mockImplementationOnce((params) => {
@@ -106,10 +106,10 @@ describe("genSchemaRetriever", () => {
             status: RETRY_STATUS_CODE_500,
             data: {
               error_code: RETRY_ERROR_CODE_50003,
-              message: "500:50003",
-            },
+              message: "500:50003"
+            }
           },
-          message: "500:50003",
+          message: "500:50003"
         };
       });
 
@@ -132,9 +132,9 @@ describe("genSchemaRetriever", () => {
           status: 600,
           data: {
             error_code: RETRY_ERROR_CODE_50002,
-            message: "600:60002",
-          },
-        },
+            message: "600:60002"
+          }
+        }
       };
     });
 

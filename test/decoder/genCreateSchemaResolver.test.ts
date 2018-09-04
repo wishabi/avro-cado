@@ -14,14 +14,14 @@ const AVRO_SCHEMA = {
     {
       name: "key",
       type: "string",
-      doc: "The the key for the message",
+      doc: "The the key for the message"
     },
     {
       name: "text",
       type: "string",
-      doc: "The text for the message",
-    },
-  ],
+      doc: "The text for the message"
+    }
+  ]
 };
 
 const AVRO_SCHEMA_INCOMPATIBLE = {
@@ -33,19 +33,19 @@ const AVRO_SCHEMA_INCOMPATIBLE = {
     {
       name: "key",
       type: "string",
-      doc: "The the key for the message",
+      doc: "The the key for the message"
     },
     {
       name: "text",
       type: "string",
-      doc: "The text for the message",
-    },
-  ],
+      doc: "The text for the message"
+    }
+  ]
 };
 
 const AVRO_SCHEMA_OBJ = Avro.Type.forSchema(AVRO_SCHEMA);
 const AVRO_SCHEMA_INCOMPATIBLE_OBJ = Avro.Type.forSchema(
-  AVRO_SCHEMA_INCOMPATIBLE,
+  AVRO_SCHEMA_INCOMPATIBLE
 );
 const SCHEMA_ID = 1;
 
@@ -53,7 +53,7 @@ const opts: Options = {
   subject: "subject",
   schemaRegistry: "host",
   numRetries: 1,
-  schema: AVRO_SCHEMA,
+  schema: AVRO_SCHEMA
 };
 
 const createSchemaResolver = genCreateSchemaResolver(opts);
@@ -65,14 +65,14 @@ describe("genCreateSchemaResolver", () => {
     axios.mockImplementationOnce(() => {
       return {
         data: {
-          schema: JSON.stringify(AVRO_SCHEMA),
-        },
+          schema: JSON.stringify(AVRO_SCHEMA)
+        }
       };
     });
 
     const schemaResolver = await createSchemaResolver(
       SCHEMA_ID,
-      AVRO_SCHEMA_OBJ,
+      AVRO_SCHEMA_OBJ
     );
 
     expect(schemaResolver).toMatchSnapshot();
@@ -84,13 +84,13 @@ describe("genCreateSchemaResolver", () => {
     axios.mockImplementationOnce((params) => {
       return {
         data: {
-          schema: JSON.stringify(AVRO_SCHEMA),
-        },
+          schema: JSON.stringify(AVRO_SCHEMA)
+        }
       };
     });
 
     await expect(
-      createSchemaResolver(SCHEMA_ID, AVRO_SCHEMA_INCOMPATIBLE_OBJ),
+      createSchemaResolver(SCHEMA_ID, AVRO_SCHEMA_INCOMPATIBLE_OBJ)
     ).rejects.toMatchSnapshot();
   });
 });
