@@ -1,17 +1,15 @@
-jest.mock("request-promise", () => {
-  return jest.fn();
-});
+jest.mock("axios");
 
-import * as rp from "request-promise";
+import axios from "axios";
 import { registerSchema } from "../../ts/avro-encoder";
-import {
-  handleError,
-  RETRY_STATUS_CODE_500,
-  RETRY_ERROR_CODE_50002,
-  RETRY_ERROR_CODE_50003
-} from "../../ts/util";
 import { ACCEPT_HEADERS } from "../../ts/config";
 import { Options } from "../../ts/types/types";
+import {
+  handleError,
+  RETRY_ERROR_CODE_50002,
+  RETRY_ERROR_CODE_50003,
+  RETRY_STATUS_CODE_500
+} from "../../ts/util";
 
 const opts: Options = {
   subject: "subject",
@@ -21,10 +19,14 @@ const opts: Options = {
 };
 
 describe("registerSchema", () => {
+  beforeEach(() => {
+    axios.mockReset();
+  });
+
   it("should get the schema ID on success", async () => {
-    rp.mockImplementationOnce(params => {
+    axios.mockImplementationOnce((params) => {
       return {
-        body: {
+        data: {
           id: 1
         }
       };
@@ -34,16 +36,15 @@ describe("registerSchema", () => {
 
     const schemaId = await registerSchema(opts);
 
-    expect(rp).toHaveBeenCalledTimes(1);
+    expect(axios).toHaveBeenCalledTimes(1);
 
     expect(schemaId).toMatchSnapshot();
-    expect(rp).toHaveBeenCalledWith({
-      body: { schema: JSON.stringify(opts.schema) },
+    expect(axios).toHaveBeenCalledWith({
+      data: { schema: JSON.stringify(opts.schema) },
       headers: { Accept: ACCEPT_HEADERS },
       json: true,
       method: "POST",
-      resolveWithFullResponse: true,
-      uri: `${opts.schemaRegistry}/subjects/${opts.subject}/versions`
+      url: `${opts.schemaRegistry}/subjects/${opts.subject}/versions`
     });
   });
 
@@ -52,23 +53,27 @@ describe("registerSchema", () => {
    * one all configured retries have been exhausted
    */
   it("should retry 1 time on retriable error code 50002", async () => {
-    rp
-      .mockImplementationOnce(params => {
+    axios
+      .mockImplementationOnce(() => {
         throw {
-          statusCode: RETRY_STATUS_CODE_500,
-          error: {
-            error_code: RETRY_ERROR_CODE_50002,
-            message: "500:50002"
+          response: {
+            status: RETRY_STATUS_CODE_500,
+            data: {
+              error_code: RETRY_ERROR_CODE_50002,
+              message: "500:50002"
+            }
           },
           message: "500:50002"
         };
       })
-      .mockImplementationOnce(params => {
+      .mockImplementationOnce(() => {
         throw {
-          statusCode: RETRY_STATUS_CODE_500,
-          error: {
-            error_code: RETRY_ERROR_CODE_50002,
-            message: "500:50002"
+          response: {
+            status: RETRY_STATUS_CODE_500,
+            data: {
+              error_code: RETRY_ERROR_CODE_50002,
+              message: "500:50002"
+            }
           },
           message: "500:50002"
         };
@@ -78,27 +83,31 @@ describe("registerSchema", () => {
 
     await expect(registerSchema(opts)).rejects.toMatchSnapshot();
 
-    expect(rp).toHaveBeenCalledTimes(3);
+    expect(axios).toHaveBeenCalledTimes(2);
   });
 
   it("should retry 1 time on retriable error code 50003", async () => {
-    rp
-      .mockImplementationOnce(params => {
+    axios
+      .mockImplementationOnce((params) => {
         throw {
-          statusCode: RETRY_STATUS_CODE_500,
-          error: {
-            error_code: RETRY_ERROR_CODE_50003,
-            message: "500:50003"
+          response: {
+            status: RETRY_STATUS_CODE_500,
+            data: {
+              error_code: RETRY_ERROR_CODE_50003,
+              message: "500:50003"
+            }
           },
           message: "500:50003"
         };
       })
-      .mockImplementationOnce(params => {
+      .mockImplementationOnce((params) => {
         throw {
-          statusCode: RETRY_STATUS_CODE_500,
-          error: {
-            error_code: RETRY_ERROR_CODE_50003,
-            message: "500:50003"
+          response: {
+            status: RETRY_STATUS_CODE_500,
+            data: {
+              error_code: RETRY_ERROR_CODE_50003,
+              message: "500:50003"
+            }
           },
           message: "500:50003"
         };
@@ -108,7 +117,7 @@ describe("registerSchema", () => {
 
     await expect(registerSchema(opts)).rejects.toMatchSnapshot();
 
-    expect(rp).toHaveBeenCalledTimes(5);
+    expect(axios).toHaveBeenCalledTimes(2);
   });
 
   /*
@@ -116,12 +125,14 @@ describe("registerSchema", () => {
    * retries are configured
    */
   it("should retry 0 times on fatal error", async () => {
-    rp.mockImplementationOnce(params => {
+    axios.mockImplementation(() => {
       throw {
-        statusCode: 600,
-        error: {
-          error_code: 50002,
-          message: "600:50002"
+        response: {
+          status: 600,
+          data: {
+            error_code: 60002,
+            message: "600:50002"
+          }
         },
         message: "600:50002"
       };
@@ -131,6 +142,6 @@ describe("registerSchema", () => {
 
     await expect(registerSchema(opts)).rejects.toMatchSnapshot();
 
-    expect(rp).toHaveBeenCalledTimes(6);
+    expect(axios).toHaveBeenCalledTimes(1);
   });
 });

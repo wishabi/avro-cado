@@ -1,8 +1,7 @@
-jest.mock("request-promise", () => {
-  return jest.fn();
-});
+jest.mock("axios");
+
 import * as Avro from "avsc";
-import * as rp from "request-promise";
+import axios from "axios";
 import { genCreateSchemaResolver } from "../../ts/avro-decoder";
 import { Options } from "../../ts/types/types";
 
@@ -50,10 +49,6 @@ const AVRO_SCHEMA_INCOMPATIBLE_OBJ = Avro.Type.forSchema(
 );
 const SCHEMA_ID = 1;
 
-const retrieveSchema = async (id: number): Promise<object> => {
-  return AVRO_SCHEMA;
-};
-
 const opts: Options = {
   subject: "subject",
   schemaRegistry: "host",
@@ -67,9 +62,9 @@ describe("genCreateSchemaResolver", () => {
   it("should return a schema resolver on success", async () => {
     expect.assertions(1);
 
-    rp.mockImplementationOnce(params => {
+    axios.mockImplementationOnce(() => {
       return {
-        body: {
+        data: {
           schema: JSON.stringify(AVRO_SCHEMA)
         }
       };
@@ -86,9 +81,9 @@ describe("genCreateSchemaResolver", () => {
   it("should throw an exception on an incompatible schemas", async () => {
     expect.assertions(1);
 
-    rp.mockImplementationOnce(params => {
+    axios.mockImplementationOnce((params) => {
       return {
-        body: {
+        data: {
           schema: JSON.stringify(AVRO_SCHEMA)
         }
       };

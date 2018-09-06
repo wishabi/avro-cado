@@ -1,4 +1,4 @@
-import { handleError, aggregateOptions } from "../ts/util";
+import { aggregateOptions, handleError } from "../ts/util";
 
 /*
  *****************************************************************
@@ -8,18 +8,22 @@ import { handleError, aggregateOptions } from "../ts/util";
 
 const RETRY_ERRORS = [
   {
-    statusCode: 500,
-    error: {
-      error_code: 50002,
-      message: "Retry error 500:50002"
+    response: {
+      status: 500,
+      data: {
+        error_code: 50002,
+        message: "Retry error 500:50002"
+      }
     },
     message: "retry1"
   },
   {
-    statusCode: 500,
-    error: {
-      error_code: 50003,
-      message: "Retry error 500:50003"
+    response: {
+      status: 500,
+      data: {
+        error_code: 50002,
+        message: "Retry error 500:50002"
+      }
     },
     message: "retry1"
   }
@@ -27,18 +31,29 @@ const RETRY_ERRORS = [
 
 const FATAL_ERRORS = [
   {
-    statusCode: 400,
+    response: {
+      status: 400
+    },
     message: "message1"
   },
-  { message: "message2" },
   {
-    statusCode: 500,
+    response: {
+      status: 500
+    },
+    message: "message2"
+  },
+  {
+    response: {
+      status: 500
+    },
     message: "message3"
   },
   {
-    statusCode: 500,
-    error: {
-      message: "Retry error 500:50003"
+    response: {
+      status: 500,
+      data: {
+        message: "Retry error 500:50003"
+      }
     },
     message: "message4"
   }
@@ -48,7 +63,7 @@ describe("handleError", () => {
   it("should return 'true' for an error eligible for retry", () => {
     expect.assertions(RETRY_ERRORS.length);
 
-    RETRY_ERRORS.forEach(retry_err => {
+    RETRY_ERRORS.forEach((retry_err: any) => {
       expect(handleError(retry_err)).toMatchSnapshot();
     });
   });
@@ -56,7 +71,7 @@ describe("handleError", () => {
   it("should return 'false' for an error NOT eligible for retry", () => {
     expect.assertions(FATAL_ERRORS.length);
 
-    FATAL_ERRORS.forEach(fatal_err => {
+    FATAL_ERRORS.forEach((fatal_err: any) => {
       expect(handleError(fatal_err)).toMatchSnapshot();
     });
   });
@@ -138,7 +153,7 @@ const CONFIG_DATA = [
 
 describe("aggregateOptions", () => {
   it("should merge the two objects correctly", () => {
-    CONFIG_DATA.forEach(test => {
+    CONFIG_DATA.forEach((test) => {
       const merged = aggregateOptions(test.default, test.override);
       expect(merged).toMatchSnapshot();
     });

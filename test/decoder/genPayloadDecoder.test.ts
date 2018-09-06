@@ -35,7 +35,7 @@ const decoderInfo: DecoderInfo = {
   subject: "subject",
   schema: AVRO_SCHEMA_OBJ,
   resolversMap: {},
-  createSchemaResolver: createSchemaResolver
+  createSchemaResolver
 };
 
 const encoded: Buffer = Buffer.from(
@@ -59,7 +59,7 @@ describe("genPayloadDecoder", () => {
       subject: "subject",
       schema: AVRO_SCHEMA_OBJ,
       resolversMap: {},
-      createSchemaResolver: createSchemaResolver
+      createSchemaResolver
     };
 
     decoderInfo[SCHEMA_ID] = AVRO_SCHEMA_OBJ.createResolver(AVRO_SCHEMA_OBJ);

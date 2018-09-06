@@ -20,9 +20,7 @@ export interface Options {
  ********************************************************
  */
 
-export interface EncodeFunc {
-  (message: object): Buffer;
-}
+export type EncodeFunc = (message: object) => Buffer;
 
 /*
  ********************************************************
@@ -30,7 +28,7 @@ export interface EncodeFunc {
  ********************************************************
  */
 
-export type ResolverMap = { [index: number]: Promise<Avro.Resolver> };
+export interface ResolverMap { [index: number]: Promise<Avro.Resolver> }
 
 export interface DecoderInfo {
   subject: string;
@@ -39,6 +37,4 @@ export interface DecoderInfo {
   createSchemaResolver: Function;
 }
 
-export interface DecodeFunc {
-  (buffer: Buffer): Promise<Object>;
-}
+export type DecodeFunc = (buffer: Buffer) => Promise<Object>;

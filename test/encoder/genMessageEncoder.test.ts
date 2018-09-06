@@ -47,7 +47,7 @@ describe("genMessageEncoder", () => {
 
     const encodeData = genMessageEncoder(AVRO_SCHEMA_OBJ, AVRO_SCHEMA_ID);
 
-    VALID_MESSAGES.forEach(message => {
+    VALID_MESSAGES.forEach((message) => {
       const encoded: Buffer = encodeData(message);
       expect(encoded).toMatchSnapshot();
     });

@@ -4,24 +4,23 @@
   "description": "Flipp Avro Encoder Decoder",
   "main": "release/index.js",
   "typings": "release/index",
-  "author": "Petre Neytchev",
+  "author": "Flipp",
   "scripts": {
     "test": "jest",
     "package": "(REL_DIR='./release/'; git checkout HEAD -- ${REL_DIR} && git rm -rf ${REL_DIR} && tsc && git add ${REL_DIR})",
     "build": "(REL_DIR='./release/'; tsc)"
   },
   "devDependencies": {
+    "@types/jest": "^23.3.1",
     "@types/node": "7.0.53",
-    "@types/jest": "^22.1.1",
-    "jest": "^22.1.4",
-    "jest-cli": "^22.1.4",
-    "ts-jest": "^22.0.2",
-    "typescript": "2.7.1"
+    "jest": "^23.5.0",
+    "ts-jest": "^23.1.4",
+    "tslint": "^5.11.0",
+    "typescript": "3.0.1"
   },
   "dependencies": {
     "avsc": "5.0.6",
-    "request": "2.83.0",
-    "request-promise": "4.2.2"
+    "axios": "^0.18.0"
   },
   "repository": {
     "type": "git",
@@ -29,8 +28,12 @@
   },
   "jest": {
     "collectCoverage": true,
+    "collectCoverageFrom": [
+      "!ts/examples/**",
+      "ts/**/*.{ts}"
+    ],
     "transform": {
-      "^.+\\.tsx?$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+      "^.+\\.tsx?$": "ts-jest"
     },
     "testRegex": "(/tests/.*|\\.test)\\.(ts|tsx|js)$",
     "moduleFileExtensions": [
