@@ -6,10 +6,10 @@ export const ACCEPT_HEADERS: string =
 
 const optionsDefault: Options = {
   schemaRegistry: "http://localhost:8081",
-  numRetries: 10,
-  wrapUnions: "auto",
-  subject: null,
-  schema: null,
+  numRetries: 10, // number of attempts to call schemaRegistry
+  wrapUnions: "auto", // avsc option
+  subject: null, // subject for schema registration
+  schema: null, // schema object as needed for avsc
 };
 
 /**
