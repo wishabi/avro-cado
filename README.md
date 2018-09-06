@@ -52,11 +52,12 @@ const avroSchema = {
 
 ```javascript
 // package options
-const opts = {
+const opts: Options = {
   schemaRegistry: "http://localhost:8081",
-  numRetries: 10,
-  subject: "test-value",
-  schema: avroSchema
+  numRetries: 10, // number of attempts to call schemaRegistry
+  wrapUnions: "auto", // avsc option
+  subject: "test-value", // subject for schema registration
+  schema: avroSchema, // schema object as needed for avsc
 };
 ```
 
