@@ -1,4 +1,5 @@
 "use strict";
+/* tslint:disable:no-console */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -8,8 +9,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const avro_encoder_1 = require("../avro-encoder");
 const avro_decoder_1 = require("../avro-decoder");
+const avro_encoder_1 = require("../avro-encoder");
 const avroSchema = {
     type: "record",
     name: "TestMessage",
@@ -57,6 +58,7 @@ const encodeDecode = () => __awaiter(this, void 0, void 0, function* () {
      */
     // create a decoder
     const decodeFunc = avro_decoder_1.createDecoder(opts);
+    // decode a message
     const decoded = yield decodeFunc(encoded);
     console.log(`After decoder:                ${JSON.stringify(decoded)}`);
 });

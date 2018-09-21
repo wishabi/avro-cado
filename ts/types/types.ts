@@ -6,7 +6,7 @@ import * as Avro from "avsc";
  ********************************************************
  */
 
-export interface Options {
+export interface IOptions {
   schemaRegistry: string;
   numRetries: number;
   schema: any;
@@ -21,6 +21,10 @@ export interface Options {
  */
 
 export type EncodeFunc = (message: object) => Buffer;
+type SchemaResolverFunc = (
+  id: number,
+  schema: Avro.Type
+) => Promise<Avro.Resolver>;
 
 /*
  ********************************************************
@@ -28,13 +32,15 @@ export type EncodeFunc = (message: object) => Buffer;
  ********************************************************
  */
 
-export interface ResolverMap { [index: number]: Promise<Avro.Resolver> }
-
-export interface DecoderInfo {
-  subject: string;
-  schema: Avro.Type;
-  resolversMap: ResolverMap;
-  createSchemaResolver: Function;
+export interface IResolverMap {
+  [index: number]: Promise<Avro.Resolver>;
 }
 
-export type DecodeFunc = (buffer: Buffer) => Promise<Object>;
+export interface IDecoderInfo {
+  subject: string;
+  schema: Avro.Type;
+  resolversMap: IResolverMap;
+  createSchemaResolver: SchemaResolverFunc;
+}
+
+export type DecodeFunc = (buffer: Buffer) => Promise<object>;

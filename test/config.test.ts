@@ -1,4 +1,5 @@
 import { processOptions } from "../ts/config";
+import { IOptions } from "../ts/types/types";
 
 /*
  *****************************************************************
@@ -37,9 +38,9 @@ describe("processOptions", () => {
   it("should throw error on invalid options", () => {
     expect.assertions(ERROR_OPTIONS.length);
 
-    ERROR_OPTIONS.forEach((err_opts) => {
+    ERROR_OPTIONS.forEach((errOpts: object) => {
       const throwsError = () => {
-        processOptions(err_opts);
+        processOptions(errOpts as IOptions);
       };
       expect(throwsError).toThrowErrorMatchingSnapshot();
     });
@@ -48,7 +49,7 @@ describe("processOptions", () => {
   it("should process the options correctly", () => {
     expect.assertions(OPTIONS.length);
 
-    OPTIONS.forEach((opts) => {
+    OPTIONS.forEach((opts: IOptions) => {
       expect(processOptions(opts)).toMatchSnapshot();
     });
   });

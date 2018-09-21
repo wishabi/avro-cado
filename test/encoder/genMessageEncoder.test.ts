@@ -1,3 +1,5 @@
+/* tslint:disable:max-line-length */
+
 import * as Avro from "avsc";
 import { genMessageEncoder } from "../../ts/avro-encoder";
 
@@ -47,7 +49,7 @@ describe("genMessageEncoder", () => {
 
     const encodeData = genMessageEncoder(AVRO_SCHEMA_OBJ, AVRO_SCHEMA_ID);
 
-    VALID_MESSAGES.forEach((message) => {
+    VALID_MESSAGES.forEach((message: object) => {
       const encoded: Buffer = encodeData(message);
       expect(encoded).toMatchSnapshot();
     });

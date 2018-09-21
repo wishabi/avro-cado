@@ -1,7 +1,7 @@
 import * as Avro from "avsc";
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { ACCEPT_HEADERS, processOptions } from "./config";
-import { DecodeFunc, DecoderInfo, Options } from "./types/types";
+import { DecodeFunc, IDecoderInfo, IOptions } from "./types/types";
 import { handleError } from "./util";
 
 /**
@@ -15,14 +15,13 @@ import { handleError } from "./util";
  * @return - The Avro schema requested
  */
 export const retrieveSchema = async (
-  { subject, schemaRegistry, numRetries }: Options,
-  id: number,
+  { subject, schemaRegistry, numRetries }: IOptions,
+  id: number
 ) => {
-  const req = {
+  const req: AxiosRequestConfig = {
     method: "get",
     url: `${schemaRegistry}/schemas/ids/${id}`,
-    headers: { Accept: ACCEPT_HEADERS },
-    json: true,
+    headers: { Accept: ACCEPT_HEADERS }
   };
 
   let error = null;
@@ -45,7 +44,7 @@ export const retrieveSchema = async (
   throw new Error(
     `Failed to retrieve schema for subject ${subject} with id ${id} :: ${
       error.message
-    }`,
+    }`
   );
 };
 
@@ -60,9 +59,9 @@ export const retrieveSchema = async (
  *           encoded with the specified Avro schema to the local
  *           Avro schema format
  */
-export const genCreateSchemaResolver = (opts: Options) => async (
+export const genCreateSchemaResolver = (opts: IOptions) => async (
   id: number,
-  schema: Avro.Type,
+  schema: Avro.Type
 ): Promise<Avro.Resolver> => {
   /**
    * Retrieve the schema by ID from the schema registry ...
@@ -83,7 +82,7 @@ export const genCreateSchemaResolver = (opts: Options) => async (
     throw new Error(
       `Local schema is not compatible with schema from registry with id ${id} :: ${
         err.message
-      }`,
+      }`
     );
   }
 };
@@ -104,10 +103,10 @@ export const genCreateSchemaResolver = (opts: Options) => async (
 export const genPayloadDecoder = ({
   schema,
   createSchemaResolver,
-  resolversMap,
-}: DecoderInfo): DecodeFunc => async (
-  buffer: Buffer | null,
-): Promise<Object> => {
+  resolversMap
+}: IDecoderInfo): DecodeFunc => async (
+  buffer: Buffer | null
+): Promise<object> => {
   // Do not attempt to avro decode null value
   if (!buffer) {
     return buffer;
@@ -137,19 +136,19 @@ export const genPayloadDecoder = ({
 };
 
 /*****************************************************************/
-/**                      EXPORTED INTERFACE                     **/
+/*                       EXPORTED INTERFACE                      */
 /*****************************************************************/
 
-export const createDecoder = (opts: Options): DecodeFunc => {
+export const createDecoder = (opts: IOptions): DecodeFunc => {
   // Aggregate the configuration values with defaults
-  const mergedOpts: Options = processOptions(opts);
+  const mergedOpts: IOptions = processOptions(opts);
 
   // decoder info
-  const decoderInfo: DecoderInfo = {
+  const decoderInfo: IDecoderInfo = {
     subject: mergedOpts.subject,
     schema: Avro.Type.forSchema(mergedOpts.schema),
     resolversMap: {},
-    createSchemaResolver: null,
+    createSchemaResolver: null
   };
 
   decoderInfo.createSchemaResolver = genCreateSchemaResolver(mergedOpts);

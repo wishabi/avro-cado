@@ -7,7 +7,7 @@ const optionsDefault = {
     numRetries: 10,
     wrapUnions: "auto",
     subject: null,
-    schema: null
+    schema: null // schema object as needed for avsc
 };
 /**
  * Validate the options and merge them with the default values

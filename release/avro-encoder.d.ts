@@ -1,4 +1,4 @@
-import { EncodeFunc, Options } from "./types/types";
+import { EncodeFunc, IOptions } from "./types/types";
 /**
  * Register the specified schema for the specified topic under the
  * specified subject.
@@ -15,7 +15,7 @@ import { EncodeFunc, Options } from "./types/types";
  *
  * @return - A Promise holding the id of the schema in the schema registry
  */
-export declare const registerSchema: ({ subject, schemaRegistry, schema, numRetries }: Options) => Promise<number>;
+export declare const registerSchema: ({ subject, schemaRegistry, schema, numRetries }: IOptions) => Promise<number>;
 /**
  * Create a function that takes a message JSON object
  * and Avro encodes it
@@ -25,6 +25,5 @@ export declare const registerSchema: ({ subject, schemaRegistry, schema, numRetr
  */
 export declare const genMessageEncoder: (schema: any, schemaId: number) => EncodeFunc;
 /*****************************************************************/
-/**                      EXPORTED INTERFACE                     **/
 /*****************************************************************/
-export declare const createEncoder: (opts: Options) => Promise<EncodeFunc>;
+export declare const createEncoder: (opts: IOptions) => Promise<EncodeFunc>;

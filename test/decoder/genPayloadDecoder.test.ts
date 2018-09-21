@@ -1,6 +1,6 @@
 import * as Avro from "avsc";
 import { genPayloadDecoder } from "../../ts/avro-decoder";
-import { DecoderInfo } from "../../ts/types/types";
+import { IDecoderInfo } from "../../ts/types/types";
 
 const AVRO_SCHEMA = {
   type: "record",
@@ -31,7 +31,7 @@ const createSchemaResolver = async (
   return AVRO_SCHEMA_OBJ.createResolver(AVRO_SCHEMA_OBJ);
 };
 
-const decoderInfo: DecoderInfo = {
+const decoderInfo: IDecoderInfo = {
   subject: "subject",
   schema: AVRO_SCHEMA_OBJ,
   resolversMap: {},
@@ -55,7 +55,7 @@ describe("genPayloadDecoder", () => {
   it("should decode a non null message successfully with non empty resolvers map", async () => {
     expect.assertions(1);
 
-    const decoderInfo2: DecoderInfo = {
+    const decoderInfo2: IDecoderInfo = {
       subject: "subject",
       schema: AVRO_SCHEMA_OBJ,
       resolversMap: {},

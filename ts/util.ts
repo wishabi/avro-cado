@@ -1,5 +1,5 @@
 import { AxiosError } from "axios";
-import { Options } from "./types/types";
+import { IOptions } from "./types/types";
 
 export const RETRY_STATUS_CODE_500 = 500;
 export const RETRY_ERROR_CODE_50002 = 50002;
@@ -14,6 +14,7 @@ export const RETRY_ERROR_CODE_50003 = 50003;
  */
 export const handleError = (err: AxiosError): boolean => {
   if (
+    err.response &&
     err.response.status &&
     err.response.status === RETRY_STATUS_CODE_500 &&
     err.response.data &&
@@ -36,9 +37,9 @@ export const handleError = (err: AxiosError): boolean => {
  * @return - merged configuration options object
  */
 export const aggregateOptions = (
-  defaultConf: Options,
-  overrideConf: Options,
-): Options => {
+  defaultConf: IOptions,
+  overrideConf: IOptions
+): IOptions => {
   const aggOptions = Object.assign({}, defaultConf, overrideConf);
 
   if (!overrideConf) {
@@ -48,7 +49,8 @@ export const aggregateOptions = (
   // determine how to handle unions
   const validWrapOptions: string[] = ["always", "never", "auto"];
   if (
-    validWrapOptions.filter((opt) => opt === aggOptions.wrapUnions).length === 0
+    validWrapOptions.filter((opt: string) => opt === aggOptions.wrapUnions)
+      .length === 0
   ) {
     aggOptions.wrapUnions = defaultConf.wrapUnions;
   }

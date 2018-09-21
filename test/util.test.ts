@@ -63,16 +63,16 @@ describe("handleError", () => {
   it("should return 'true' for an error eligible for retry", () => {
     expect.assertions(RETRY_ERRORS.length);
 
-    RETRY_ERRORS.forEach((retry_err: any) => {
-      expect(handleError(retry_err)).toMatchSnapshot();
+    RETRY_ERRORS.forEach((retryErr: any) => {
+      expect(handleError(retryErr)).toMatchSnapshot();
     });
   });
 
   it("should return 'false' for an error NOT eligible for retry", () => {
     expect.assertions(FATAL_ERRORS.length);
 
-    FATAL_ERRORS.forEach((fatal_err: any) => {
-      expect(handleError(fatal_err)).toMatchSnapshot();
+    FATAL_ERRORS.forEach((fatalErr: any) => {
+      expect(handleError(fatalErr)).toMatchSnapshot();
     });
   });
 });
@@ -153,7 +153,7 @@ const CONFIG_DATA = [
 
 describe("aggregateOptions", () => {
   it("should merge the two objects correctly", () => {
-    CONFIG_DATA.forEach((test) => {
+    CONFIG_DATA.forEach((test: any) => {
       const merged = aggregateOptions(test.default, test.override);
       expect(merged).toMatchSnapshot();
     });

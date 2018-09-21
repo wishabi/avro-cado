@@ -11,12 +11,13 @@ exports.RETRY_ERROR_CODE_50003 = 50003;
  * @return - true iff the error is eligible for retry
  */
 exports.handleError = (err) => {
-    if (err.statusCode &&
-        err.statusCode === exports.RETRY_STATUS_CODE_500 &&
-        err.error &&
-        err.error.error_code &&
-        (err.error.error_code === exports.RETRY_ERROR_CODE_50003 ||
-            err.error.error_code === exports.RETRY_ERROR_CODE_50002)) {
+    if (err.response &&
+        err.response.status &&
+        err.response.status === exports.RETRY_STATUS_CODE_500 &&
+        err.response.data &&
+        err.response.data.error_code &&
+        (err.response.data.error_code === exports.RETRY_ERROR_CODE_50003 ||
+            err.response.data.error_code === exports.RETRY_ERROR_CODE_50002)) {
         return true;
     }
     return false;
@@ -36,7 +37,8 @@ exports.aggregateOptions = (defaultConf, overrideConf) => {
     }
     // determine how to handle unions
     const validWrapOptions = ["always", "never", "auto"];
-    if (validWrapOptions.filter(opt => opt === aggOptions.wrapUnions).length === 0) {
+    if (validWrapOptions.filter((opt) => opt === aggOptions.wrapUnions)
+        .length === 0) {
         aggOptions.wrapUnions = defaultConf.wrapUnions;
     }
     return aggOptions;

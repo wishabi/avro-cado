@@ -8,10 +8,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const rp = require("request-promise");
 const Avro = require("avsc");
-const util_1 = require("./util");
+const axios_1 = require("axios");
 const config_1 = require("./config");
+const util_1 = require("./util");
 /**
  * Register the specified schema for the specified topic under the
  * specified subject.
@@ -32,19 +32,17 @@ exports.registerSchema = ({ subject, schemaRegistry, schema, numRetries }) => __
     // craft the REST call to the schema registry
     const req = {
         method: "POST",
-        uri: `${schemaRegistry}/subjects/${subject}/versions`,
+        url: `${schemaRegistry}/subjects/${subject}/versions`,
         headers: { Accept: config_1.ACCEPT_HEADERS },
-        body: {
+        data: {
             schema: JSON.stringify(schema)
-        },
-        json: true,
-        resolveWithFullResponse: true
+        }
     };
     let error = null;
     // implement retry on certain status/reason codes
     for (let i = 0; i <= numRetries; i += 1) {
         try {
-            return (yield rp(req)).body.id;
+            return (yield axios_1.default(req)).data.id;
         }
         catch (err) {
             // save the error
@@ -79,7 +77,7 @@ exports.genMessageEncoder = (schema, schemaId) => (payload) => {
     return Buffer.concat([header, buffer]);
 };
 /*****************************************************************/
-/**                      EXPORTED INTERFACE                     **/
+/*                       EXPORTED INTERFACE                      */
 /*****************************************************************/
 exports.createEncoder = (opts) => __awaiter(this, void 0, void 0, function* () {
     // Aggregate the configuration values with defaults
