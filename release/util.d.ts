@@ -1,4 +1,5 @@
-import { Options } from "./types/types";
+import { AxiosError } from "axios";
+import { IOptions } from "./types/types";
 export declare const RETRY_STATUS_CODE_500 = 500;
 export declare const RETRY_ERROR_CODE_50002 = 50002;
 export declare const RETRY_ERROR_CODE_50003 = 50003;
@@ -9,7 +10,7 @@ export declare const RETRY_ERROR_CODE_50003 = 50003;
  * @param err - the error in question
  * @return - true iff the error is eligible for retry
  */
-export declare const handleError: (err: any) => boolean;
+export declare const handleError: (err: AxiosError) => boolean;
 /**
  * Merge the user specified configuration options with the
  * default ones
@@ -18,4 +19,4 @@ export declare const handleError: (err: any) => boolean;
  * @param overrideConf - the user specified configuration options
  * @return - merged configuration options object
  */
-export declare const aggregateOptions: (defaultConf: Options, overrideConf: Options) => Options;
+export declare const aggregateOptions: (defaultConf: IOptions, overrideConf: IOptions) => IOptions;

@@ -1,5 +1,5 @@
 {
-  "name": "@flipp/sr-enc-dec",
+  "name": "@flipp/avro-cado",
   "version": "0.0.1",
   "description": "Flipp Avro Encoder Decoder",
   "main": "release/index.js",
@@ -30,6 +30,7 @@
     "collectCoverage": true,
     "collectCoverageFrom": [
       "!ts/examples/**",
+      "!ts/index.ts",
       "ts/**/*.{ts}"
     ],
     "transform": {

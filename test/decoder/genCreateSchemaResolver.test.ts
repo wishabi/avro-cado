@@ -3,7 +3,7 @@ jest.mock("axios");
 import * as Avro from "avsc";
 import axios from "axios";
 import { genCreateSchemaResolver } from "../../ts/avro-decoder";
-import { Options } from "../../ts/types/types";
+import { IOptions } from "../../ts/types/types";
 
 const AVRO_SCHEMA = {
   type: "record",
@@ -49,7 +49,7 @@ const AVRO_SCHEMA_INCOMPATIBLE_OBJ = Avro.Type.forSchema(
 );
 const SCHEMA_ID = 1;
 
-const opts: Options = {
+const opts: IOptions = {
   subject: "subject",
   schemaRegistry: "host",
   numRetries: 1,
@@ -81,7 +81,7 @@ describe("genCreateSchemaResolver", () => {
   it("should throw an exception on an incompatible schemas", async () => {
     expect.assertions(1);
 
-    axios.mockImplementationOnce((params) => {
+    axios.mockImplementationOnce(params => {
       return {
         data: {
           schema: JSON.stringify(AVRO_SCHEMA)

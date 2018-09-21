@@ -1,3 +1,5 @@
+/* tslint:disable:no-console */
+
 import { createDecoder } from "../avro-decoder";
 import { createEncoder } from "../avro-encoder";
 
@@ -10,19 +12,19 @@ const avroSchema = {
     {
       name: "key",
       type: "string",
-      doc: "The the key for the message",
+      doc: "The the key for the message"
     },
     {
       name: "text",
       type: "string",
-      doc: "The text for the message",
-    },
-  ],
+      doc: "The text for the message"
+    }
+  ]
 };
 
 const message = {
   key: `1`,
-  text: `A simple test message 1`,
+  text: `A simple test message 1`
 };
 
 const encodeDecode = async () => {
@@ -30,7 +32,7 @@ const encodeDecode = async () => {
     schemaRegistry: "http://localhost:8081",
     numRetries: 10,
     subject: "test-value",
-    schema: avroSchema,
+    schema: avroSchema
   };
 
   /*

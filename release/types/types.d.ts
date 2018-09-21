@@ -1,24 +1,22 @@
 /// <reference types="node" />
 import * as Avro from "avsc";
-export interface Options {
+export interface IOptions {
     schemaRegistry: string;
     numRetries: number;
     schema: any;
     subject: string;
     wrapUnions?: string;
 }
-export interface EncodeFunc {
-    (message: object): Buffer;
-}
-export declare type ResolverMap = {
+export declare type EncodeFunc = (message: object) => Buffer;
+declare type SchemaResolverFunc = (id: number, schema: Avro.Type) => Promise<Avro.Resolver>;
+export interface IResolverMap {
     [index: number]: Promise<Avro.Resolver>;
-};
-export interface DecoderInfo {
+}
+export interface IDecoderInfo {
     subject: string;
     schema: Avro.Type;
-    resolversMap: ResolverMap;
-    createSchemaResolver: Function;
+    resolversMap: IResolverMap;
+    createSchemaResolver: SchemaResolverFunc;
 }
-export interface DecodeFunc {
-    (buffer: Buffer): Promise<Object>;
-}
+export declare type DecodeFunc = (buffer: Buffer) => Promise<object>;
+export {};

@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const Avro = require("avsc");
-const rp = require("request-promise");
+const axios_1 = require("axios");
 const config_1 = require("./config");
 const util_1 = require("./util");
 /**
@@ -24,16 +24,16 @@ const util_1 = require("./util");
  */
 exports.retrieveSchema = ({ subject, schemaRegistry, numRetries }, id) => __awaiter(this, void 0, void 0, function* () {
     const req = {
-        uri: `${schemaRegistry}/schemas/ids/${id}`,
-        headers: { Accept: config_1.ACCEPT_HEADERS },
-        json: true,
-        resolveWithFullResponse: true
+        method: "get",
+        url: `${schemaRegistry}/schemas/ids/${id}`,
+        headers: { Accept: config_1.ACCEPT_HEADERS }
     };
     let error = null;
     // implement retry on certain status/reason codes
     for (let i = 0; i <= numRetries; i += 1) {
         try {
-            return JSON.parse((yield rp(req)).body.schema);
+            const results = yield axios_1.default(req);
+            return JSON.parse(results.data.schema);
         }
         catch (err) {
             // save the error
@@ -114,7 +114,7 @@ exports.genPayloadDecoder = ({ schema, createSchemaResolver, resolversMap }) => 
     return schema.decode(buffer.slice(5), 0, yield resolversMap[id]).value;
 });
 /*****************************************************************/
-/**                      EXPORTED INTERFACE                     **/
+/*                       EXPORTED INTERFACE                      */
 /*****************************************************************/
 exports.createDecoder = (opts) => {
     // Aggregate the configuration values with defaults

@@ -3,14 +3,14 @@ jest.mock("axios");
 import axios from "axios";
 import { retrieveSchema } from "../../ts/avro-decoder";
 import { ACCEPT_HEADERS } from "../../ts/config";
-import { Options } from "../../ts/types/types";
+import { IOptions } from "../../ts/types/types";
 import {
   RETRY_ERROR_CODE_50002,
   RETRY_ERROR_CODE_50003,
   RETRY_STATUS_CODE_500
 } from "../../ts/util";
 
-const opts: Options = {
+const opts: IOptions = {
   subject: "subject",
   schemaRegistry: "host",
   numRetries: 1,
@@ -25,7 +25,7 @@ describe("genSchemaRetriever", () => {
   });
 
   it("should get the schema on success", async () => {
-    axios.mockImplementationOnce((params) => {
+    axios.mockImplementationOnce(() => {
       return {
         data: {
           schema: JSON.stringify(opts.schema)
@@ -42,7 +42,6 @@ describe("genSchemaRetriever", () => {
     expect(schema).toMatchSnapshot();
     expect(axios).toHaveBeenCalledWith({
       headers: { Accept: ACCEPT_HEADERS },
-      json: true,
       method: "get",
       url: `${opts.schemaRegistry}/schemas/ids/${SCHEMA_ID}`
     });
@@ -88,7 +87,7 @@ describe("genSchemaRetriever", () => {
 
   it("should retry 1 time on retriable error code 50003", async () => {
     axios
-      .mockImplementationOnce((params) => {
+      .mockImplementationOnce(() => {
         throw {
           response: {
             status: RETRY_STATUS_CODE_500,
@@ -100,7 +99,7 @@ describe("genSchemaRetriever", () => {
           message: "500:50003"
         };
       })
-      .mockImplementationOnce((params) => {
+      .mockImplementationOnce(() => {
         throw {
           response: {
             status: RETRY_STATUS_CODE_500,
@@ -125,7 +124,7 @@ describe("genSchemaRetriever", () => {
    * retries are configured
    */
   it("should retry 0 times on fatal error", async () => {
-    axios.mockImplementationOnce((params) => {
+    axios.mockImplementationOnce(() => {
       throw {
         message: "600:60002",
         response: {

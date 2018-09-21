@@ -3,15 +3,14 @@ jest.mock("axios");
 import axios from "axios";
 import { registerSchema } from "../../ts/avro-encoder";
 import { ACCEPT_HEADERS } from "../../ts/config";
-import { Options } from "../../ts/types/types";
+import { IOptions } from "../../ts/types/types";
 import {
-  handleError,
   RETRY_ERROR_CODE_50002,
   RETRY_ERROR_CODE_50003,
   RETRY_STATUS_CODE_500
 } from "../../ts/util";
 
-const opts: Options = {
+const opts: IOptions = {
   subject: "subject",
   schemaRegistry: "host",
   numRetries: 1,
@@ -24,7 +23,7 @@ describe("registerSchema", () => {
   });
 
   it("should get the schema ID on success", async () => {
-    axios.mockImplementationOnce((params) => {
+    axios.mockImplementationOnce(() => {
       return {
         data: {
           id: 1
@@ -42,7 +41,6 @@ describe("registerSchema", () => {
     expect(axios).toHaveBeenCalledWith({
       data: { schema: JSON.stringify(opts.schema) },
       headers: { Accept: ACCEPT_HEADERS },
-      json: true,
       method: "POST",
       url: `${opts.schemaRegistry}/subjects/${opts.subject}/versions`
     });
@@ -88,7 +86,7 @@ describe("registerSchema", () => {
 
   it("should retry 1 time on retriable error code 50003", async () => {
     axios
-      .mockImplementationOnce((params) => {
+      .mockImplementationOnce(() => {
         throw {
           response: {
             status: RETRY_STATUS_CODE_500,
@@ -100,7 +98,7 @@ describe("registerSchema", () => {
           message: "500:50003"
         };
       })
-      .mockImplementationOnce((params) => {
+      .mockImplementationOnce(() => {
         throw {
           response: {
             status: RETRY_STATUS_CODE_500,

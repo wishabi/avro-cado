@@ -1,4 +1,4 @@
-import { DecoderInfo, DecodeFunc, Options } from "./types/types";
+import { DecodeFunc, IDecoderInfo, IOptions } from "./types/types";
 /**
  * Retrieve the Avro schema from the schema registry. On an error
  * eligible for retry, try up to the configure number of times
@@ -9,7 +9,7 @@ import { DecoderInfo, DecodeFunc, Options } from "./types/types";
  * @param id - the schema id that should be retrieved
  * @return - The Avro schema requested
  */
-export declare const retrieveSchema: ({ subject, schemaRegistry, numRetries }: Options, id: number) => Promise<any>;
+export declare const retrieveSchema: ({ subject, schemaRegistry, numRetries }: IOptions, id: number) => Promise<any>;
 /**
  * Retrieve the Avro schema from the schema registry, parse it,
  * and create a resolver to the local Avro schema.
@@ -21,7 +21,7 @@ export declare const retrieveSchema: ({ subject, schemaRegistry, numRetries }: O
  *           encoded with the specified Avro schema to the local
  *           Avro schema format
  */
-export declare const genCreateSchemaResolver: (opts: Options) => (id: number, schema: any) => Promise<any>;
+export declare const genCreateSchemaResolver: (opts: IOptions) => (id: number, schema: any) => Promise<any>;
 /**
  * Create an Avro decoder based on the specified parameters and
  * return a closure that takes an encoded Buffer and decodes it
@@ -35,8 +35,7 @@ export declare const genCreateSchemaResolver: (opts: Options) => (id: number, sc
  * @param buffer - The Avro encoded buffer
  * @return - The Avro decoded object that conforms to the specified schema
  */
-export declare const genPayloadDecoder: ({ schema, createSchemaResolver, resolversMap }: DecoderInfo) => DecodeFunc;
+export declare const genPayloadDecoder: ({ schema, createSchemaResolver, resolversMap }: IDecoderInfo) => DecodeFunc;
 /*****************************************************************/
-/**                      EXPORTED INTERFACE                     **/
 /*****************************************************************/
-export declare const createDecoder: (opts: Options) => DecodeFunc;
+export declare const createDecoder: (opts: IOptions) => DecodeFunc;
