@@ -1,6 +1,6 @@
 {
   "name": "@flipp/avro-cado",
-  "version": "0.1.2",
+  "version": "0.0.2",
   "description": "Flipp Avro Encoder Decoder",
   "main": "release/index.js",
   "typings": "release/index",
