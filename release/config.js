@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const util_1 = require("../ts/util");
+const util_1 = require("./util");
 exports.ACCEPT_HEADERS = "application/vnd.schemaregistry.v1+json, application/vnd.schemaregistry+json, application/json";
 const optionsDefault = {
     schemaRegistry: "http://localhost:8081",

@@ -1,5 +1,5 @@
-import { aggregateOptions } from "../ts/util";
 import { IOptions } from "./types/types";
+import { aggregateOptions } from "./util";
 
 export const ACCEPT_HEADERS: string =
   "application/vnd.schemaregistry.v1+json, application/vnd.schemaregistry+json, application/json";

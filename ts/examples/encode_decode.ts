@@ -2,6 +2,7 @@
 
 import { createDecoder } from "../avro-decoder";
 import { createEncoder } from "../avro-encoder";
+import { DecodeFunc } from "../types/types";
 
 const avroSchema = {
   type: "record",
@@ -58,10 +59,10 @@ const encodeDecode = async () => {
    */
 
   // create a decoder
-  const decodeFunc = createDecoder(opts);
+  const decodeFunc: DecodeFunc = createDecoder(opts);
 
   // decode a message
-  const decoded = await decodeFunc(encoded);
+  const decoded: object = await decodeFunc(encoded);
 
   console.log(`After decoder:                ${JSON.stringify(decoded)}`);
 };
