@@ -2,6 +2,7 @@
   "name": "avro-cado",
   "version": "0.1.0",
   "description": "Avro Encoder Decoder",
+  "license": "Apache License 2.0",
   "main": "release/index.js",
   "typings": "release/index",
   "scripts": {
