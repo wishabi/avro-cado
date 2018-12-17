@@ -2,6 +2,9 @@ defaults: &defaults
   working_directory: ~/workspace
   docker:
       - image: 421990735784.dkr.ecr.us-east-1.amazonaws.com/ci-build-environment:node-10
+        aws_auth:
+          aws_access_key_id: $AWS_ACCESS_KEY_ID
+          aws_secret_access_key: $AWS_SECRET_ACCESS_KEY
 
 version: 2
 jobs:
