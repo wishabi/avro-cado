@@ -6,7 +6,8 @@
   "main": "release/index.js",
   "typings": "release/index",
   "scripts": {
-    "test": "jest",
+    "test": "JEST_JUNIT_OUTPUT=reports/unit-tests/junit-test-results.xml jest --coverage --verbose --runInBand",
+    "lint": "tslint -c tslint.json -p tsconfig.json",
     "package": "(REL_DIR='./release/'; git checkout HEAD -- ${REL_DIR} && git rm -rf ${REL_DIR} && tsc && git add ${REL_DIR})",
     "build": "(REL_DIR='./release/'; tsc)"
   },
@@ -14,6 +15,7 @@
     "@types/jest": "^23.3.10",
     "@types/node": "10.12.15",
     "jest": "^23.6.0",
+    "jest-junit": "^5.2.0",
     "ts-jest": "^23.10.5",
     "tslint": "^5.11.0",
     "typescript": "3.2.2"
