@@ -1,7 +1,7 @@
 defaults: &defaults
   working_directory: ~/workspace
   docker:
-      - image: node:10.14.2-alpine
+      - image: 421990735784.dkr.ecr.us-east-1.amazonaws.com/ci-build-environment:node-10
 
 version: 2
 jobs:
