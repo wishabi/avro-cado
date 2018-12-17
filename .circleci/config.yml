@@ -9,16 +9,7 @@ jobs:
     <<: *defaults
     steps:
       - checkout
-      # see if we have the node_modules cached already
-      - restore_cache:
-          key: 'v1-node-module-cache-{{ .Branch }}-{{ checksum "package.json" }}'
       - run: npm i
-      # save the node_modules cache
-      - save_cache:
-          key: 'v1-node-module-cache-{{ .Branch }}-{{ checksum "package.json" }}'
-          paths:
-            - ~/workspace/node_modules
-
       - persist_to_workspace:
           root: ~/workspace
           paths:
