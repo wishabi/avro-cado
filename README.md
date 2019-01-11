@@ -1,6 +1,6 @@
 # avro-cado: Encode and Decode using a schema-registry
 
-<img align="right" height="200" src="./logo.png">
+<img align="right" height="200" src="https://i.imgur.com/qUrjFNV.png">
 
 ## Features
 

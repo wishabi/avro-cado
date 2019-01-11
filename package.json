@@ -1,5 +1,6 @@
 {
   "name": "avro-cado",
+  "author": "Open Source <opensource@wishabi.com>",
   "version": "0.1.0",
   "description": "Avro Encoder Decoder",
   "license": "Apache License 2.0",
