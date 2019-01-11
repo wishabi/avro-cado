@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`processOptions should process the options correctly 1`] = `
+Object {
+  "numRetries": 100,
+  "schema": Object {},
+  "schemaRegistry": "schemaRegistry",
+  "subject": "subject",
+  "wrapUnions": "never",
+}
+`;
+
+exports[`processOptions should throw error on invalid options 1`] = `"schema key missing"`;
+
+exports[`processOptions should throw error on invalid options 2`] = `"subject key missing"`;

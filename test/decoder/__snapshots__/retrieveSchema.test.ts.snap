@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`genSchemaRetriever should get the schema on success 1`] = `
+Object {
+  "data": "schema",
+}
+`;
+
+exports[`genSchemaRetriever should retry 0 times on fatal error 1`] = `[Error: Failed to retrieve schema for subject subject with id 1 :: 600:60002]`;
+
+exports[`genSchemaRetriever should retry 1 time on retriable error code 50002 1`] = `[Error: Failed to retrieve schema for subject subject with id 1 :: 500:50002]`;
+
+exports[`genSchemaRetriever should retry 1 time on retriable error code 50003 1`] = `[Error: Failed to retrieve schema for subject subject with id 1 :: 500:50003]`;

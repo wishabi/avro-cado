@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`genCreateSchemaResolver should return a schema resolver on success 1`] = `
+Resolver {
+  "_read": [Function],
+  "_readerType": Object {
+    "doc": "Properties related to a TestMessage.",
+    "fields": Array [
+      Object {
+        "doc": "The the key for the message",
+        "name": "key",
+        "type": "string",
+      },
+      Object {
+        "doc": "The text for the message",
+        "name": "text",
+        "type": "string",
+      },
+    ],
+    "name": "com.flipp.node.kafka.TestMessage.TestMessage",
+    "type": "record",
+  },
+  "itemsType": null,
+  "size": 0,
+  "symbols": null,
+  "valuesType": null,
+}
+`;
+
+exports[`genCreateSchemaResolver should throw an exception on an incompatible schemas 1`] = `[Error: Local schema is not compatible with schema from registry with id 1 :: no alias found for com.flipp.node.kafka.TestMessage.TestMessage]`;
